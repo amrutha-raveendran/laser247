@@ -19,16 +19,22 @@ class HomeController extends Controller
     public function index()
     {
         try {
+            $event_list = $evnt_list='';
+
             // Fetch the data from the API using Guzzle
             $response = $this->httpClient->request('GET', 'https://tezcdn.com/mac88-casino-blue');
+            $event_list = $this->httpClient->request('GET', 'https://api.datalaser247.com/api/guest/menu');
+            
 
             // Check for a successful response
             if ($response->getStatusCode() == 200) {
                 // Decode the JSON response
                 $games = json_decode($response->getBody(), true);
+                $evnt_list = json_decode($event_list->getBody(),true);
+              
 
                 if (is_array($games)) {
-                    return view('home', compact('games'));
+                    return view('home', compact('games','evnt_list'));
                 } else {
                     Log::error('Unexpected JSON structure', ['response' => $games]);
                     return view('home', ['games' => []]);
