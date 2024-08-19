@@ -1,19 +1,12 @@
-<!-- resources/views/home.blade.php -->
-
 @extends('layouts.app')
 
 @section('content')
 <div class="container">
-    <div class="row">
+    <div class="row no-gutters"> 
         @if(!empty($games))
             @foreach($games as $game)
-                <div class="col-md-4">
-                    <div class="card mb-4">
-                        <img src="{{ $game['image'] }}" class="card-img-top" alt="{{ $game['name'] }}">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $game['name'] }}</h5>
-                        </div>
-                    </div>
+                <div class="col-4 p-1">
+                    <img src="{{ $game['image'] }}" class="img-fluid" alt="{{ $game['name'] }}"> 
                 </div>
             @endforeach
         @else
@@ -22,3 +15,5 @@
     </div>
 </div>
 @endsection
+
+

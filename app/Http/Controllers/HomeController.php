@@ -3,29 +3,30 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
+    protected $httpClient;
+
     public function __construct()
     {
-      //  $this->middleware('auth');
+        $this->httpClient = new Client();
+        // $this->middleware('auth');
     }
 
     public function index()
     {
         try {
-           
-            // Fetch the data from the API using Http client
-            $response = Http::get('https://tezcdn.com/mac88-casino-blue');
+            // Fetch the data from the API using Guzzle
+            $response = $this->httpClient->request('GET', 'https://tezcdn.com/mac88-casino-blue');
 
             // Check for a successful response
-            if ($response->successful()) {
+            if ($response->getStatusCode() == 200) {
                 // Decode the JSON response
-                $games = $response->json();
+                $games = json_decode($response->getBody(), true);
 
-               
                 if (is_array($games)) {
                     return view('home', compact('games'));
                 } else {
@@ -34,7 +35,10 @@ class HomeController extends Controller
                 }
             } else {
                 // Log the error and return an empty array
-                Log::error('API request failed', ['status' => $response->status(), 'response' => $response->body()]);
+                Log::error('API request failed', [
+                    'status' => $response->getStatusCode(), 
+                    'response' => $response->getBody()->getContents()
+                ]);
                 return view('home', ['games' => []]);
             }
         } catch (\Exception $e) {
