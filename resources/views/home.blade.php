@@ -1,7 +1,9 @@
-@extends('layouts.app')
-
+@extends('layouts.main')
 @section('content')
 <div class="container">
+
+
+
     <div class="row no-gutters"> 
         @if(!empty($games))
             @foreach($games as $game)

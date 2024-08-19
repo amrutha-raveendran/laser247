@@ -36,6 +36,31 @@
     </div>
   </div>
 </nav>
+<nav class="navbar navbar-expand-lg navbar-light menu-navbar topnav">
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse topnav-div" id="navbarMain ">
+        <ul class="navbar-nav topnav-ul scroll">
+        @if(isset($evnt_list['data']['menu']) && is_array($evnt_list['data']['menu']))
+      @foreach($evnt_list['data']['menu'] as $menuItem)
+        @if(isset($menuItem['name']) )
+          <li class="nav-item">
+            <a class="nav-link" href="">{{ $menuItem['name'] }}</a>
+          </li>
+        @else
+          <li class="nav-item">
+            <span class="nav-link">Menu item data is incomplete.</span>
+          </li>
+        @endif
+      @endforeach
+    @else
+      <li class="nav-item">
+        <span class="nav-link">No menu items available.</span>
+      </li>
+    @endif
+        </ul>
+      </div>
+  </div>
+</nav>
 <body>
 @yield('content')
 </body>

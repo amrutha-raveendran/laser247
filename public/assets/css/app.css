@@ -23,3 +23,32 @@
     margin-left: 0;
     background: white;
 }
+.scroll {
+   
+  }
+  .navbar-nav li{
+    display: inline-block;
+  }
+  .topnav {
+    padding: 0;
+    height: 42px;
+    /* background: linear-gradient(180deg, #5f7fdb 0, #0cddff 100%); */
+    background: #1f43ae;
+}
+.topnav-div{
+    white-space: nowrap;
+    overflow-x: auto; 
+    -webkit-overflow-scrolling: touch;
+}
+
+.topnav-div ul li a {
+    color: #fff !important;
+    /* font-size: 12px; */
+    padding: 6px 23px;
+    display: inline-block;
+    border-right: 1px solid rgb(237 235 234 / 20%);
+    list-style: none;
+    text-transform: capitalize;
+    /* font-weight: 700; */
+    position: relative;
+}
