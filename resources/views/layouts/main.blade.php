@@ -9,6 +9,11 @@
     <link href="{{ asset('assets/css/bootstrap.min.css')}}" rel="stylesheet"  crossorigin="anonymous">
     <!--  CSS -->
     <link href="{{ asset('assets/css/app.css')}}" rel="stylesheet"  crossorigin="anonymous">
+    <!-- <link href="{{ asset('assets/css/bootstrap-icons.css')}}" rel="stylesheet"  crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
+     
 
     <title>Laser247</title>
   </head>
@@ -20,12 +25,12 @@
     <div class="collapse navbar-collapse navbar-ul" id="navbarSupportedContent">
       
       <form class="d-flex ms-auto">
-        <i class="fa fa-user"></i>
+        <span class="input-group-text"><i class="fas fa-user"></i></span>
         <input class="form-control me-2" type="text" placeholder="Username" aria-label="Search">
         <input class="form-control me-2" type="password" placeholder="Password" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Login</button>
+        <button class="btn-login" type="submit">Login </button>
       </form>
-      <button> Login with DemoID </button>
+      <button class="btn-login"> Login with DemoID  <i class="fa fa-arrow-right"></i></button>
       
   
     </div>

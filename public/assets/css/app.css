@@ -10,3 +10,16 @@
 .navbar-ul a{
     color:ffff;
 }
+.btn-login {
+    background: var(--log-button);
+    color: #7e0b0b;
+    font-size: 14px;
+    text-transform: capitalize;
+    padding: 4px 10px;
+    border-radius: 7px;
+    text-decoration: none;
+    font-weight: 700;
+    margin-right: 3px;
+    margin-left: 0;
+    background: white;
+}
