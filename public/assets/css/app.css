@@ -1,6 +1,12 @@
-.logo span.logo-lg img, .logo span.logo-sm img {
+.logo-img img {
     width: 158px;
     object-fit: contain;
     position: relative;
     left: 10px;
+}
+.navbar-bg {
+    background: #7e0b0b;
+}
+.navbar-ul a{
+    color:ffff;
 }
