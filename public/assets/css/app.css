@@ -1,0 +1,6 @@
+.logo span.logo-lg img, .logo span.logo-sm img {
+    width: 158px;
+    object-fit: contain;
+    position: relative;
+    left: 10px;
+}
