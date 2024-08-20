@@ -34,7 +34,7 @@
   }
   .topnav {
     padding: 0;
-    height: 45px;
+    height: 32px;
     /* background: linear-gradient(180deg, #5f7fdb 0, #0cddff 100%); */
     background: #1f43ae;
 }
@@ -42,7 +42,9 @@
     white-space: nowrap;
     overflow-x: auto; 
     -webkit-overflow-scrolling: touch;
-    margin-top: 3px;
+    margin-top: 15px;
+    height: 50px;
+    margin-bottom: 0px;
 }
 
 .topnav-div ul li a {
@@ -89,10 +91,13 @@
   .marquee-box {
     display: flex;
     color: #000;
-    line-height: 26px;
-    height: 30px;
+    line-height: 27px;
+    height: 44px;
     background: linear-gradient(180deg, #d1d10c 27%, #dbdb0d 83%);
-    margin-bottom: 1px;
+    /* margin-bottom: 1px; */
+    margin-bottom: -2px;
+    margin-left: 4px;
+    width: 99%;
 }
 .marquee-box h4 {
     font-size: 14px;
@@ -104,6 +109,8 @@
     display: flex;
     align-items: center;
     position: relative;
+    border-right: 1px solid white;
+    margin-top: 15px !important;
 }
 .marquee-box h4 i {
     margin-right: 4px;
@@ -128,6 +135,10 @@
     padding: 0 20px;
     font-size: 18px;
     color: #333;
+}
+marquee {
+    padding: 5px;
+    margin-top: 11px;
 }
   /* Animation example */
 @keyframes zoom-in-out {
