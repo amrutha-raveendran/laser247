@@ -40,17 +40,22 @@
   <div class="container-fluid">
     <div class="collapse navbar-collapse topnav-div" id="navbarMain ">
         <ul class="navbar-nav topnav-ul scroll">
+        <li class="nav-item">
+            <a class="nav-link" href="">Home</a>
+        </li>
         @if(isset($evnt_list['data']['menu']) && is_array($evnt_list['data']['menu']))
-      @foreach($evnt_list['data']['menu'] as $menuItem)
-        @if(isset($menuItem['name']) )
-          <li class="nav-item">
-            <a class="nav-link" href="">{{ $menuItem['name'] }}</a>
-          </li>
-        @else
-          <li class="nav-item">
-            <span class="nav-link">Menu item data is incomplete.</span>
-          </li>
-        @endif
+          @foreach($evnt_list['data']['menu'] as $menuItem)
+            @if(isset($menuItem['name']) )
+              <li class="nav-item">
+                <a class="nav-link {{($menuItem['id'] =='99995'||$menuItem['id']=='99999')?'hightlight-menus':(($menuItem['id']=='99991')?'rc-menu':'')}}" href="" >
+                  {{ $menuItem['name'] }}<sup class="sup-animated">{{($menuItem['id']=='99991' || $menuItem['id']=='99990')?'NEW':''}}</sup>
+                </a>
+              </li>
+            @else
+              <li class="nav-item">
+                <span class="nav-link">Menu item data is incomplete.</span>
+              </li>
+            @endif
       @endforeach
     @else
       <li class="nav-item">
