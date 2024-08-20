@@ -41,7 +41,8 @@
     <div class="collapse navbar-collapse topnav-div" id="navbarMain ">
         <ul class="navbar-nav topnav-ul scroll">
         <li class="nav-item">
-            <a class="nav-link" href="">Home</a>
+        <a class="nav-link" href="{{ route('dashboard') }}">Home</a>
+
         </li>
         @if(isset($evnt_list['data']['menu']) && is_array($evnt_list['data']['menu']))
           @foreach($evnt_list['data']['menu'] as $menuItem)
