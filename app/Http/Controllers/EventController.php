@@ -15,7 +15,7 @@ class EventController extends Controller
         // $this->middleware('auth');
     }
 
-    public function showEvents()
+    public function showDashboard()
     {
         // Mock data for sidebar (replace with actual API call if needed)
         $menuData = [
