@@ -54,21 +54,30 @@ class EventController extends Controller
     }
     public function getEventDetails($eventId)
     {
-        $url = "https://api.datalaser247.com/api/guest/event/{$eventId}";
-        $response = $this->httpClient->request('POST', $url);
-        
-        // Convert the response to an associative array
-        $eventDetails = json_decode($response->getBody()->getContents(), true);
+        $response = $this->httpClient->request('POST', "https://api.datalaser247.com/api/guest/event/{$eventId}");
     
-        // Extract the main event details
-        $eventData = $eventDetails['data']['event']['event'] ?? null;
+        // Decode the JSON response
+        $responseBody = $response->getBody();
+        $eventDetails = json_decode($responseBody, true);
     
-        // If there's no event data, handle it gracefully
-        if (!$eventData) {
-            abort(404, 'Event not found');
+        // Check if decoding was successful
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            // Handle JSON parsing error
+            abort(500, 'Failed to parse response');
         }
     
-        return view('event_details', ['event' => $eventData]);
+        // Extract data
+        $event = $eventDetails['data']['event'];
+        $matchOdds = $event['match_odds'];
+        $overUnderGoals = array_filter($event['markets'], function($market) {
+            return $market['market_type_id'] === 'OVER_UNDER_25';
+        });
+    
+        return view('event_details', [
+            'event' => $event['event'],
+            'matchOdds' => $matchOdds,
+            'overUnderGoals' => $overUnderGoals
+        ]);
     }
     
     

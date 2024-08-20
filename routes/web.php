@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 use App\Http\Controllers\EventController;
 
-Route::get('/events', [EventController::class, 'showEvents']);
+Route::get('/dashboard', [EventController::class, 'showEvents']);
 Route::get('/event/{eventId}', [EventController::class, 'getEventDetails'])->name('event.details');
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

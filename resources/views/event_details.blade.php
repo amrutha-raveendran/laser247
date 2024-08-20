@@ -2,22 +2,40 @@
 
 @section('content')
 <div class="container">
-    <h1>{{ $event['name'] }}</h1>
-    <p><strong>Competition:</strong> {{ $event['competition_id'] }}</p>
-    <p><strong>Event Type ID:</strong> {{ $event['event_type_id'] }}</p>
-    <p><strong>Open Date:</strong> {{ $event['open_date'] }}</p>
-    <p><strong>Status:</strong> {{ $event['status'] == 0 ? 'Upcoming' : 'In Play' }}</p>
-
-    @if (isset($eventDetails['data']['event']['match_odds']))
-        <h2>Match Odds</h2>
-        @foreach ($eventDetails['data']['event']['match_odds'] as $odds)
-            <div>
-                <p><strong>Market Name:</strong> {{ $odds['market_name'] }}</p>
-                <p><strong>Min Bet:</strong> {{ $odds['min_bet'] }}</p>
-                <p><strong>Max Bet:</strong> {{ $odds['max_bet'] }}</p>
-            </div>
-        @endforeach
-    @endif
+    <h2>Event Details</h2>
+    
+    <!-- Match Odds Section -->
+    <h3>Match Odds</h3>
+    @foreach($matchOdds['runners'] as $runner)
+        <div>
+            <strong>{{ $runner['name'] }}</strong>
+            @if(isset($runner['back']) && isset($runner['lay']))
+                <div>
+                    Back: {{ implode(' | ', array_column($runner['back'], 'price')) }}
+                    <br>
+                    Lay: {{ implode(' | ', array_column($runner['lay'], 'price')) }}
+                </div>
+            @endif
+        </div>
+    @endforeach
+    
+    <!-- Over/Under 2.5 Goals Section -->
+    @foreach($overUnderGoals as $market)
+        @if($market['market_type_id'] === 'OVER_UNDER_25')
+            <h3>{{ $market['market_name'] }}</h3>
+            @foreach($market['runners'] as $runner)
+                <div>
+                    <strong>{{ $runner['name'] }}</strong>
+                    @if(isset($runner['back']) && isset($runner['lay']))
+                        <div>
+                            Back: {{ implode(' | ', array_column($runner['back'], 'price')) }}
+                            <br>
+                            Lay: {{ implode(' | ', array_column($runner['lay'], 'price')) }}
+                        </div>
+                    @endif
+                </div>
+            @endforeach
+        @endif
+    @endforeach
 </div>
-
 @endsection
