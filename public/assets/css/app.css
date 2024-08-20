@@ -165,3 +165,13 @@ marquee {
         transform: translateX(-100%);
     }
 }
+
+
+.badge-success {
+    background-color: green; 
+    color: white;
+}
+
+.dashboard-container{
+    background-color: lavender;     
+}
