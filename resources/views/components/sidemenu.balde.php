@@ -81,3 +81,35 @@
     /* Optional: Additional styling for the collapsible menu */
     
 </style>
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+                @foreach ($menuData as $menuItem)
+                    <li class="nav-item">
+                        <a class="nav-link {{ $loop->first ? 'active' : '' }}" id="tab-{{ $menuItem['id'] }}" data-toggle="tab" href="#content-{{ $menuItem['id'] }}" role="tab" aria-controls="content-{{ $menuItem['id'] }}" aria-selected="{{ $loop->first ? 'true' : 'false' }}">
+                            {{ $menuItem['name'] }}
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
+            <div class="tab-content mt-3" id="myTabContent">
+                  @foreach ($menuData as $menuItem)
+                        <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="content-{{ $menuItem['id'] }}" role="tabpanel" aria-labelledby="tab-{{ $menuItem['id'] }}">
+            @if (isset($groupedEvents[$menuItem['id']]))
+                <ul>
+                    @foreach ($groupedEvents[$menuItem['id']] as $event)
+                        <li>
+                            <a href="{{ route('event.details', ['eventId' => $event['event_id']]) }}">
+                                {{ $event['name'] }}
+                                @if ($event['in_play'])
+                                    <span class="badge badge-success ml-2">In Play</span>
+                                @endif
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            @else
+                <p>No events available for this category.</p>
+            @endif
+        </div>
+    @endforeach
+</div>
+            </div>

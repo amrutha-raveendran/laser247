@@ -146,10 +146,10 @@ marquee {
   
 }
 
-.main-content {
+/* .main-content {
     flex: 1;
     padding: 15px;
-}
+} */
 .as-banner-2 {
     position: relative;
     margin-bottom: 1px;
@@ -339,6 +339,38 @@ marquee {
 .menu ul li.active .arrow {
     transform: rotate(180deg); /* Arrow points up when submenu is open */
 }
+/* left sidebar */
+.sidebar-menu {
+    width: 240px;
+    background: #fff;
+    bottom: 0;
+    padding: 20px 0;
+    position: fixed;
+    transition: all .1s ease-out;
+    top: 128px;
+    box-shadow: 0 2px 6px -2px rgba(0, 0, 0, .16), 0 2px 6px 0 rgba(0, 0, 0, .12);
+}
+.sidebar-menu {
+    top: 127px;
+    left: 2px;
+    padding: 0;
+}
+.sidebar-menu ul{
+    list-style: none;
+    padding: 0;
+}
+.sidebar-menu ul li button {
+    color: #000;
+    padding: 0.3rem 0.1rem 0.3rem 0.6rem;
+    font-size: 13px;
+    border-bottom: 1px solid #ededed;
+    text-transform: capitalize;
+}
+#sidebar-menu > ul > li > button:hover {
+    background-color: #ededed !important;
+    color: #1b2d52 !important;
+}
+/* left sidebar */
 /* Right sidebar */
 .open-bets {
     top: 127px;
@@ -346,12 +378,26 @@ marquee {
     height: 100%;
     overflow-x: hidden;
     overflow-y: scroll;
-    width: 26.5%;
+    width: 25.5%;
     background: #f4f4f4;
     right: 0;
     border-left: 1px solid #c8ced3;
 }
+.open-bets h2{ 
+    margin: 0;
+    font-size: 12px;
+    font-weight: 400;
+    background: #104f7c;
+    border-radius: 0;
+    padding: 5px;
+    color: #fff;
+    text-transform: capitalize;
+}
+
 /* Right SIdebar */
+/* tabs-pills */
+
+/* tabs-pills */
 /* Dashboard */
 
 /* Sidebar Collapse */
@@ -389,6 +435,10 @@ marquee {
     text-decoration: none;
     color: #000;
 }
+.content li:hover {
+    background-color: #ccc;
+
+}
 /* Sidebar Collapse */
   /* Animation example */
 @keyframes zoom-in-out {
@@ -425,3 +475,89 @@ marquee {
 .dashboard-container{
     background-color: lavender;     
 }
+/* Events List Page */
+.event-list {
+    background: #243a48;
+    border-right: 1px solid #c8ced3;
+    border-left: 1px solid #c8ced3;
+    border-bottom: 1px solid #c8ced3;
+}
+.event-list h2 {
+    font-weight: 700;
+    font-size: 12px;
+    margin: 0;
+    color: #fff;
+    text-transform: capitalize;
+    line-height: 25px;
+    position: relative;
+    padding-left: 10px;
+}
+.evnts-nav-pills {
+    display: block;
+    width: 100%;
+    white-space: nowrap;
+    background: #fff;
+}
+.events-tab{
+    display: ruby-text;
+    overflow-x: auto;
+}
+.events-tab li {
+    display: inline-block;
+}
+.events-tab li a.active, .event-list .nav-pills li a:hover {
+    background: #000 !important;
+    color: #fff !important;
+
+}
+.events-tab li a {
+    margin: 0;
+    font-size: 13px;
+    padding: 3px 14px;
+    color: #000;
+    background: #fff !important;
+    border-radius: 0;
+    line-height: 20px;
+    border: none;
+    font-weight: 600;
+}
+.event-tab-content span{
+    font-weight: 500;
+    display: flex;
+
+}
+.event-games ul {
+    margin: 0;
+    background: #fff;
+}
+.event-games ul li{
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
+.event-games ul li a{
+    text-decoration: none;
+    color: #2789ce;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: calc(100% - 13px);
+    line-height: normal;
+    display: block;
+    font-size: 14px;
+}
+.event-games-li{
+
+}
+.in-play {
+    font-weight: 900;
+    color: #508d0e;
+    margin-right: 5px;
+    font-size: 12px;
+}
+.asxr{
+    background: #104f7c !important;
+    text-align: center;
+    height: 24px;
+}
+/* Events List Page */
