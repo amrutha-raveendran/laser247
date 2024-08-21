@@ -339,7 +339,21 @@ marquee {
 .menu ul li.active .arrow {
     transform: rotate(180deg); /* Arrow points up when submenu is open */
 }
+/* Right sidebar */
+.open-bets {
+    top: 127px;
+    position: fixed;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    width: 26.5%;
+    background: #f4f4f4;
+    right: 0;
+    border-left: 1px solid #c8ced3;
+}
+/* Right SIdebar */
 /* Dashboard */
+
 /* Sidebar Collapse */
 .collapsible {
     padding: 6px;
