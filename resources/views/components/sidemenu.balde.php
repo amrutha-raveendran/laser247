@@ -1,6 +1,22 @@
-<aside class="menu">
-    
-<ul>
+@extends('layouts.main')
+@section('content')
+<div class="container">
+    <div class="row">
+        <!-- Include Sidebar Component -->
+        @include('components.sidebar')
+
+        <!-- Your other content or sections can go here -->
+    </div>
+</div>
+@endsection
+<!-- resources/views/components/sidebar.blade.php -->
+<div class="col-md-3">
+    <div class="sidebar-menu">
+
+    </div>
+    <h3>Categories</h3>
+    <ul>
+     
         @foreach ($menu as $item)
             @if ($groupedEvents->has($item['id']))
                 <li>
@@ -25,7 +41,25 @@
             @endif
         @endforeach
     </ul>
-</aside>
+</div>
+
+<li>
+                <a href="#" class="menu-link">Services <span class="arrow">&#9660;</span></a>
+                <ul class="submenu">
+                    <li><a href="#">Web Design</a></li>
+                    <li><a href="#">Development</a></li>
+                    <li><a href="#">SEO</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#" class="menu-link">About <span class="arrow">&#9660;</span></a>
+                <ul class="submenu">
+                    <li><a href="#">Our Team</a></li>
+                    <li><a href="#">Our History</a></li>
+                </ul>
+            </li>
+
+<!-- JavaScript for Collapsible Functionality -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const coll = document.querySelectorAll('.collapsible');
@@ -42,3 +76,8 @@
         });
     });
 </script>
+
+<style>
+    /* Optional: Additional styling for the collapsible menu */
+    
+</style>

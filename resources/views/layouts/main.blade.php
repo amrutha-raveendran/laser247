@@ -19,7 +19,7 @@
   </head>
 <nav class="navbar navbar-expand-lg navbar-light navbar-bg">
   <div class="container-fluid">
-    <a class="navbar-brand logo-img" href="#">
+    <a class="navbar-brand logo-img" href="{{ route('home')}}">
         <img src="{{ asset('assets/img/logo.gif')}}" alt="" class="logo">
     </a>
     <div class="collapse navbar-collapse navbar-ul" id="navbarSupportedContent">
@@ -36,15 +36,19 @@
     </div>
   </div>
 </nav>
+
 <nav class="navbar navbar-expand-lg navbar-light menu-navbar topnav">
   <div class="container-fluid">
     <div class="collapse navbar-collapse topnav-div" id="navbarMain ">
         <ul class="navbar-nav topnav-ul scroll">
         <li class="nav-item">
-            <a class="nav-link" href="">Home</a>
+            <a class="nav-link" href="{{ route('dashboard')}}">Home</a>
         </li>
-        @if(isset($evnt_list['data']['menu']) && is_array($evnt_list['data']['menu']))
-          @foreach($evnt_list['data']['menu'] as $menuItem)
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('dashboard')}}">In-play</a>
+        </li>
+        @if(isset($menus['evnt_list']['data']['menu']) && is_array($menus['evnt_list']['data']['menu']))
+        @foreach($menus['evnt_list']['data']['menu'] as $menuItem)
             @if(isset($menuItem['name']) )
               <li class="nav-item">
                 <a class="nav-link {{($menuItem['id'] =='99995'||$menuItem['id']=='99999')?'hightlight-menus':(($menuItem['id']=='99991')?'rc-menu':'')}}" href="" >
@@ -57,16 +61,45 @@
               </li>
             @endif
       @endforeach
-    @else
-      <li class="nav-item">
-        <span class="nav-link">No menu items available.</span>
-      </li>
-    @endif
+      @else
+        <li class="nav-item">
+          <span class="nav-link">No menu items available.</span>
+        </li>
+      @endif
         </ul>
       </div>
   </div>
 </nav>
 <body>
 @yield('content')
+@yield('scripts')
+<script>
+      // scripts.js
+
+// Select all menu links with submenus
+var menuLinks = document.querySelectorAll('.menu-link');
+
+// Loop through each menu link and attach a click event listener
+menuLinks.forEach(function(link) {
+    link.addEventListener('click', function(event) {
+        // Prevent default action
+        event.preventDefault();
+
+        // Get the parent <li> element
+        var parentLi = this.parentElement;
+
+        // Toggle the active class on the parent <li>
+        parentLi.classList.toggle('active');
+
+        // Close other open submenus if needed
+        menuLinks.forEach(function(otherLink) {
+            if (otherLink !== link) {
+                otherLink.parentElement.classList.remove('active');
+            }
+        });
+    });
+});
+
+      </script>
 </body>
 </html>

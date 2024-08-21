@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Client;
+use App\Http\Controllers\CommonController;
 class EventController extends Controller
 {
     protected $httpClient;
@@ -12,11 +13,13 @@ class EventController extends Controller
     public function __construct()
     {
         $this->httpClient = new Client();
+        $this->CommonController = new CommonController();
         // $this->middleware('auth');
     }
 
     public function showEvents()
     {
+        
         // Mock data for sidebar (replace with actual API call if needed)
         $menuData = [
             ["id" => 4, "name" => "Cricket"],
@@ -50,7 +53,7 @@ class EventController extends Controller
        // Group events by event_type_id and then by competition_name
        $groupedEvents = collect($data['data']['events'])->groupBy(['event_type_id', 'competition_name']);
 
-       return view('events', ['menu' => $menuData, 'groupedEvents' => $groupedEvents]);
+       return view('events', ['menu' => $menuData, 'groupedEvents' => $groupedEvents,'menus'=>$this->CommonController->header_menus()]);
     }
     public function getEventDetails($eventId)
     {

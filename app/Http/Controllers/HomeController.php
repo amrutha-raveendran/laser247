@@ -3,54 +3,57 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\CommonController;
 
 class HomeController extends Controller
 {
-    protected $httpClient;
 
     public function __construct()
     {
-        $this->httpClient = new Client();
+        $this->CommonController = new CommonController();
         // $this->middleware('auth');
     }
 
     public function index()
     {
-        try {
-            $event_list = $evnt_list='';
+      
+        return view('home', ['menus'=>$this->CommonController->header_menus(),'evnts_list'=>$this->CommonController->events_list()]);
+        
+    }
+    public function test()
+    {
+        $menuData = [
+            ["id" => 4, "name" => "Cricket"],
+            ["id" => 1, "name" => "Football"],
+            ["id" => 2, "name" => "Tennis"],
+            ["id" => 99999, "name" => "Casino"],
+            ["id" => 99995, "name" => "I Casino"],
+            ["id" => 7, "name" => "Horse Racing"],
+            ["id" => 4339, "name" => "Greyhound Racing"],
+            ["id" => 99994, "name" => "Kabaddi"],
+            ["id" => 2378961, "name" => "Politics"],
+            ["id" => 99991, "name" => "Sports book"],
+            ["id" => 99998, "name" => "Int Casino"],
+            ["id" => 99990, "name" => "Binary"],
+            ["id" => 99997, "name" => "Casino Vivo"],
+            ["id" => 26420387, "name" => "Mixed Martial Arts"],
+            ["id" => 998917, "name" => "Volleyball"],
+            ["id" => 7524, "name" => "Ice Hockey"],
+            ["id" => 7522, "name" => "Basketball"],
+            ["id" => 7511, "name" => "Baseball"],
+            ["id" => 3503, "name" => "Darts"],
+            ["id" => 29, "name" => "Futsal"],
+            ["id" => 20, "name" => "Table Tennis"],
+            ["id" => 5, "name" => "Rugby"]
+        ];
 
-            // Fetch the data from the API using Guzzle
-            $response = $this->httpClient->request('GET', 'https://tezcdn.com/mac88-casino-blue');
-            $event_list = $this->httpClient->request('GET', 'https://api.datalaser247.com/api/guest/menu');
-            
+       // Fetch event list data from the API
+       $response = Http::get('https://api.datalaser247.com/api/guest/event_list');
+       $data = $response->json();
 
-            // Check for a successful response
-            if ($response->getStatusCode() == 200) {
-                // Decode the JSON response
-                $games = json_decode($response->getBody(), true);
-                $evnt_list = json_decode($event_list->getBody(),true);
-              
+       // Group events by event_type_id and then by competition_name
+       $groupedEvents = collect($data['data']['events'])->groupBy(['event_type_id', 'competition_name']);
 
-                if (is_array($games)) {
-                    return view('home', compact('games','evnt_list'));
-                } else {
-                    Log::error('Unexpected JSON structure', ['response' => $games]);
-                    return view('home', ['games' => []]);
-                }
-            } else {
-                // Log the error and return an empty array
-                Log::error('API request failed', [
-                    'status' => $response->getStatusCode(), 
-                    'response' => $response->getBody()->getContents()
-                ]);
-                return view('home', ['games' => []]);
-            }
-        } catch (\Exception $e) {
-            // Log the exception and return an empty array
-            Log::error('Exception occurred: ' . $e->getMessage());
-            return view('home', ['games' => []]);
-        }
+       return view('test', ['menu' => $menuData, 'groupedEvents' => $groupedEvents,'menus'=>$this->CommonController->header_menus()]);
     }
 }
