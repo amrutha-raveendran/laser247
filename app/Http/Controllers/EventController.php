@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Client;
 use Illuminate\Support\Collection;
+use Log;
 class EventController extends Controller
 {
     protected $httpClient;
@@ -61,33 +62,55 @@ class EventController extends Controller
     $sidebarEvents = collect($data['data']['events'])->groupBy(['event_type_id', 'competition_name']);
     return view('events', compact('menuData', 'groupedEvents','sidebarEvents'));
     }
+ 
     public function getEventDetails($eventId)
     {
-        $response = $this->httpClient->request('POST', "https://api.datalaser247.com/api/guest/event/{$eventId}");
+        $responseDetail = $this->httpClient->request('POST', "https://api.datalaser247.com/api/guest/event/{$eventId}");
     
         // Decode the JSON response
-        $responseBody = $response->getBody();
+        $responseBody = $responseDetail->getBody();
         $eventDetails = json_decode($responseBody, true);
+        //dd($eventDetails);
+        $url = 'https://odds.cricbet99.club/ws/getScoreData';
     
-        // Check if decoding was successful
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            // Handle JSON parsing error
-            abort(500, 'Failed to parse response');
+        // Initialize cURL session
+        $ch = curl_init();
+    
+        // Set cURL options
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+            'event_id' => $eventId,
+        ]));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/x-www-form-urlencoded; charset=UTF-8',
+        ]);
+    
+        // Execute the cURL request
+        $response = curl_exec($ch);
+    
+        // Check for errors
+        if (curl_errno($ch)) {
+            curl_close($ch);
+            abort(500, 'cURL Error: ' . curl_error($ch));
         }
     
-        // Extract data
-        $event = $eventDetails['data']['event'];
-        $matchOdds = $event['match_odds'];
-        $overUnderGoals = array_filter($event['markets'], function($market) {
-            return $market['market_type_id'] === 'OVER_UNDER_25';
-        });
+        // Get the HTTP status code
+        $httpStatusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     
+        // Close the cURL session
+        curl_close($ch);
+       
+        if ($httpStatusCode === 204) {
+            return view('event_details', [
+                'message' => 'No content available for this event.'
+            ]);
+        }
+
+        // Return the raw HTML response directly to the Blade view
         return view('event_details', [
-            'event' => $event['event'],
-            'matchOdds' => $matchOdds,
-            'overUnderGoals' => $overUnderGoals
+            'htmlContent' => $response
         ]);
     }
-    
-    
 }
