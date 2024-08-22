@@ -12,7 +12,8 @@
     left: 10px;
 }
 .navbar-bg {
-    background: #7e0b0b;
+    /* background: #7e0b0b; */
+    background:#ffc107;
 }
 .navbar-ul a{
     color:ffff;
@@ -40,7 +41,8 @@
     padding: 0;
     height: 32px;
     /* background: linear-gradient(180deg, #5f7fdb 0, #0cddff 100%); */
-    background: #1f43ae;
+    /* background: #1f43ae; */
+    background: #7e0b0b;
     margin-bottom: 18px;
 }
 .topnav-div{
@@ -444,17 +446,20 @@ marquee {
 @keyframes zoom-in-out {
     0% {
         transform: scale(1, 1);
-        background: yellow;
+        background: #fff;
+        color:#000;
     }
     50% {
         transform: scale(1.1, 1.1);
         background: darkred;
         color: #fff;
-        box-shadow: inset 0px 2px 4px 0px #1b00ff;
+        box-shadow: inset 0px 2px 4px 0px #darkred;
     }
     100% {
         transform: scale(1, 1);
-        background: blue;
+        /* background: #fff; */
+        background: #86b7fe;
+        color: #000;
     }
   }
   @keyframes scrollNews {
