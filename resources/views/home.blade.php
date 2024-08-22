@@ -169,13 +169,13 @@
     <div class="row mb-1">
         <div class="col-md-12">
             <div class="footer-section">
-                <h3>
+                <!-- <h3>
                     <img src="{{asset('assets/img/gc.png')}}" alt="" class="img-fluid">
                 </h3>
                 <div class="foot-img">
                     <img src="{{asset('assets/img/lice.png')}}" alt="" class="img-fluid">
                 </div>
-                <p>Laser247 is the trading name of Sports Target B.V., a company incorporated and regulated in Curaçao under company number 148053 with it's registered office at Fransche Bloemweg 4, Willemstad, Curaçao.</p>
+                <p>Laser247 is the trading name of Sports Target B.V., a company incorporated and regulated in Curaçao under company number 148053 with it's registered office at Fransche Bloemweg 4, Willemstad, Curaçao.</p> -->
             </div>
         </div>
     </div>

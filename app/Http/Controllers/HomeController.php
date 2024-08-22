@@ -20,6 +20,7 @@ class HomeController extends Controller
         return view('home', ['menus'=>$this->CommonController->header_menus(),'evnts_list'=>$this->CommonController->events_list()]);
         
     }
+    /*
     public function test()
     {
         $menuData = [
@@ -56,4 +57,5 @@ class HomeController extends Controller
 
        return view('test', ['menu' => $menuData, 'groupedEvents' => $groupedEvents,'menus'=>$this->CommonController->header_menus()]);
     }
+       */
 }

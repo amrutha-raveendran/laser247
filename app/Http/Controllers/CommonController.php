@@ -20,6 +20,7 @@ class CommonController extends Controller
     public function header_menus()
     {
         try {
+   
  
             $event_list = $this->httpClient->request('GET', 'https://api.datalaser247.com/api/guest/menu');
          

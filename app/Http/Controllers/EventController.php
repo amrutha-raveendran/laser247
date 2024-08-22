@@ -54,6 +54,7 @@ class EventController extends Controller
         $eventDetails = json_decode($responseBody, true);
         //dd($eventDetails);
         $url = 'https://odds.cricbet99.club/ws/getScoreData';
+        
     
         // Initialize cURL session
         $ch = curl_init();
@@ -92,7 +93,7 @@ class EventController extends Controller
 
         // Return the raw HTML response directly to the Blade view
         return view('event_details', [
-            'htmlContent' => $response, 'menuData' => $this->CommonController->list_menu(),'sidebarEvents'=>$this->CommonController->sidebar(),'menus'=>$this->CommonController->header_menus()
+            'htmlContent' => $response, 'event_details'=>$eventDetails,'menuData' => $this->CommonController->list_menu(),'sidebarEvents'=>$this->CommonController->sidebar(),'menus'=>$this->CommonController->header_menus()
         ]);
     }
 }
