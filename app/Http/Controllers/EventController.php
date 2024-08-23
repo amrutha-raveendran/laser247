@@ -1,91 +1,156 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Client;
 use App\Http\Controllers\CommonController;
 use Illuminate\Support\Collection;
 use Log;
+
 class EventController extends Controller
 {
     protected $httpClient;
+    protected $commonController;
 
     public function __construct()
     {
         $this->httpClient = new Client();
-        $this->CommonController = new CommonController();
+        $this->commonController = new CommonController();
         // $this->middleware('auth');
     }
 
     public function showDashboard()
     {
-        
-       // Fetch data from the API
-    $response = Http::get('https://api.datalaser247.com/api/guest/events');
-    $events = $response->json('data.events');
-    $data = $response->json();
-    // Mock data for sidebar (replace this with actual API call if needed)
+        $events = $this->fetchEvents();
+        $groupedEvents = $this->groupEventsByType($events);
 
-    // Prepare events grouped by event_type_id
-    $groupedEvents = [];
-    foreach ($events as $event) {
-        $eventTypeId = $event['event_type_id'];
-        if (!isset($groupedEvents[$eventTypeId])) {
-            $groupedEvents[$eventTypeId] = [];
-        }
-        $groupedEvents[$eventTypeId][] = $event;
+        return view('events', [
+            'menuData' => $this->commonController->list_menu(),
+            'groupedEvents' => $groupedEvents,
+            'sidebarEvents' => $this->commonController->sidebar(),
+            'menus' => $this->commonController->header_menus()
+        ]);
     }
-    $groupedEvents = collect($groupedEvents);
-   
 
-      return view('events', ['menuData' => $this->CommonController->list_menu(), 'groupedEvents' => $groupedEvents,'sidebarEvents'=>$this->CommonController->sidebar(),'menus'=>$this->CommonController->header_menus()]);
-    }
- 
     public function getEventDetails($eventId)
     {
-        
-        
+        $eventDetails = $this->fetchEventDetails($eventId);
+        $marketIds = $this->extractMarketIds($eventDetails['data']['event']);
+        $marketData = $this->fetchMarketData($marketIds);
+  
 
-        $responseDetail = $this->httpClient->request('POST', "https://api.datalaser247.com/api/guest/event/{$eventId}");
-        $eventDetails = json_decode($responseDetail->getBody()->getContents(), true);
-    
-        // Extract the market_id from event details
-        $marketId = $eventDetails['data']['event']['match_odds']['market_id'];
-    
-        // Make a POST request to get market data from the second API
-        $responseMarketData = $this->httpClient->request('POST', 'https://odds.laser247.online/ws/getMarketDataNew', [
-            'headers' => [
-                'Content-Type' => 'application/x-www-form-urlencoded',
-            ],
-            'form_params' => [
-                'market_ids[]' => $marketId,
-            ],
+        $scoreData = $this->fetchScoreData($eventId);
+
+        $message = $this->handleNoContentResponse($scoreData['status']);
+
+        return view('event_details', [
+            'htmlContent' => $scoreData['content'],
+            'eventDetails' => $eventDetails['data']['event'],
+            'event_details' => $eventDetails,
+            'rows' => $marketData['rows'],
+            'message' => $message,
+            'menuData' => $this->commonController->list_menu(),
+            'sidebarEvents' => $this->commonController->sidebar(),
+            'menus' => $this->commonController->header_menus(),
         ]);
-    
-        // Get the market data as a string
-        $marketDataString = trim($responseMarketData->getBody()->getContents());
-    
-        // Split the string into an array using the '|' delimiter
-        $marketDataArray = explode('|', $marketDataString);
-    
-        // Initialize arrays to hold the rows of data
+    }
+
+    private function fetchEvents()
+    {
+        $response = Http::get('https://api.datalaser247.com/api/guest/events');
+        return $response->json('data.events');
+    }
+
+    private function groupEventsByType($events)
+    {
+        $groupedEvents = [];
+        foreach ($events as $event) {
+            $eventTypeId = $event['event_type_id'];
+            if (!isset($groupedEvents[$eventTypeId])) {
+                $groupedEvents[$eventTypeId] = [];
+            }
+            $groupedEvents[$eventTypeId][] = $event;
+        }
+        return collect($groupedEvents);
+    }
+
+    private function fetchEventDetails($eventId)
+    {
+        $response = $this->httpClient->request('POST', "https://api.datalaser247.com/api/guest/event/{$eventId}");
+        return json_decode($response->getBody()->getContents(), true);
+    }
+
+    private function extractMarketIds($event)
+    {
+        $marketIds = [];
+
+        // Extract from match_odds
+        if (isset($event['match_odds']['market_id'])) {
+            $marketIds[] = $event['match_odds']['market_id'];
+        }
+
+        // Extract from book_makers
+        if (isset($event['book_makers']) && is_array($event['book_makers'])) {
+            foreach ($event['book_makers'] as $bookMaker) {
+                if (isset($bookMaker['market_id'])) {
+                    $marketIds[] = $bookMaker['market_id'];
+                }
+            }
+        }
+
+        // Extract from fancy
+        if (isset($event['fancy']) && is_array($event['fancy'])) {
+            foreach ($event['fancy'] as $fancy) {
+                if (isset($fancy['market_id'])) {
+                    $marketIds[] = $fancy['market_id'];
+                }
+            }
+        }
+
+        // Extract from markets
+        if (isset($event['markets']) && is_array($event['markets'])) {
+            foreach ($event['markets'] as $market) {
+                if (isset($market['market_id'])) {
+                    $marketIds[] = $market['market_id'];
+                }
+            }
+        }
+
+        return array_unique($marketIds); // Ensure market IDs are unique
+    }
+
+    private function fetchMarketData($marketIds)
+    {
+        $responses = [];
+        foreach ($marketIds as $marketId) {
+            $response = $this->httpClient->request('POST', 'https://odds.laser247.online/ws/getMarketDataNew', [
+                'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
+                'form_params' => ['market_ids[]' => $marketId],
+            ]);
+
+            $marketDataString = trim($response->getBody()->getContents());
+            $marketDataArray = explode('|', $marketDataString);
+
+            $responses[$marketId] = $this->processMarketData($marketDataArray);
+        }
+
+        return ['rows' => $responses];
+    }
+
+    private function processMarketData($marketDataArray)
+    {
         $rows = [];
         $currentOdds = [];
         $currentValues = [];
-    
-        // Process the array to extract odds and values
         $isActiveSection = false;
+
         foreach ($marketDataArray as $data) {
             if ($data === 'ACTIVE') {
-                // If we've already encountered an active section, push the current data to rows
                 if ($isActiveSection) {
                     $rows[] = ['odds' => $currentOdds, 'values' => $currentValues];
                     $currentOdds = [];
                     $currentValues = [];
                 }
-                // Now start a new active section
                 $isActiveSection = true;
             } elseif ($isActiveSection) {
                 if (is_numeric($data)) {
@@ -97,58 +162,42 @@ class EventController extends Controller
                 }
             }
         }
-    
-        // Add the last set of odds and values if available
+
         if (!empty($currentOdds) && !empty($currentValues)) {
             $rows[] = ['odds' => $currentOdds, 'values' => $currentValues];
         }
-    
-        // Initialize cURL session for the additional request
+
+        return $rows;
+    }
+
+    private function fetchScoreData($eventId)
+    {
         $url = 'https://odds.cricbet99.club/ws/getScoreData';
         $ch = curl_init();
-    
-        // Set cURL options
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-            'event_id' => $eventId,
-        ]));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(['event_id' => $eventId]));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/x-www-form-urlencoded; charset=UTF-8',
-        ]);
-    
-        // Execute the cURL request
-        $response = curl_exec($ch);
-    
-        // Check for errors
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded; charset=UTF-8']);
+
+        $content = curl_exec($ch);
+        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
         if (curl_errno($ch)) {
             curl_close($ch);
             abort(500, 'cURL Error: ' . curl_error($ch));
         }
-    
-        // Get the HTTP status code
-        $httpStatusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    
-        // Close the cURL session
-        curl_close($ch);
-     $message='';
-        if ($httpStatusCode === 204) 
-          $message ='No content available for this event';
-    
-        // Return the combined data to the Blade view
-        return view('event_details', [
-            'htmlContent' => $response,
-            'eventDetails' => $eventDetails['data']['event'],
-            'event_details'=>$eventDetails,
-            'rows' => $rows,
-            'message'=>$message,
-            'menuData' => $this->CommonController->list_menu(),
-            'sidebarEvents' => $this->CommonController->sidebar(),
-            'menus' => $this->CommonController->header_menus(),
-        ]);
-    }
-    
 
-    
+        curl_close($ch);
+
+        return [
+            'content' => $content,
+            'status' => $status
+        ];
+    }
+
+    private function handleNoContentResponse($httpStatusCode)
+    {
+        return $httpStatusCode === 204 ? 'No content available for this event' : '';
+    }
 }
