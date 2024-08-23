@@ -9,6 +9,8 @@
     <link href="{{ asset('assets/css/bootstrap.min.css')}}" rel="stylesheet"  crossorigin="anonymous">
     <!--  CSS -->
     <link href="{{ asset('assets/css/app.css')}}" rel="stylesheet"  crossorigin="anonymous">
+    <link href="{{ asset('assets/css/themes.css')}}" rel="stylesheet"  crossorigin="anonymous">
+    <link href="{{ asset('assets/css/icons.min.css')}}" rel="stylesheet"  crossorigin="anonymous">
     <!-- <link href="{{ asset('assets/css/bootstrap-icons.css')}}" rel="stylesheet"  crossorigin="anonymous"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 

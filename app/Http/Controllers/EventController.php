@@ -46,6 +46,7 @@ class EventController extends Controller
     public function getEventDetails($eventId)
     {
         
+        
 
         $responseDetail = $this->httpClient->request('POST', "https://api.datalaser247.com/api/guest/event/{$eventId}");
     
@@ -84,16 +85,13 @@ class EventController extends Controller
     
         // Close the cURL session
         curl_close($ch);
-       
-        if ($httpStatusCode === 204) {
-            return view('event_details', [
-                'message' => 'No content available for this event.'
-            ]);
-        }
+        $message='';
+        if ($httpStatusCode === 204) 
+            $message ='No content available for this event';
 
         // Return the raw HTML response directly to the Blade view
         return view('event_details', [
-            'htmlContent' => $response, 'event_details'=>$eventDetails,'menuData' => $this->CommonController->list_menu(),'sidebarEvents'=>$this->CommonController->sidebar(),'menus'=>$this->CommonController->header_menus()
+            'htmlContent' => $response,'message'=>$message, 'event_details'=>$eventDetails,'menuData' => $this->CommonController->list_menu(),'sidebarEvents'=>$this->CommonController->sidebar(),'menus'=>$this->CommonController->header_menus()
         ]);
     }
 }

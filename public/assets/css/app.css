@@ -1,6 +1,25 @@
 .body{
     /* font-family:  Helvetica, sans-serif !important; */
 }
+:root {
+    --theme-navbar: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%);
+    --top-navbar: linear-gradient(180deg, #5f7fdb 0, #0cddff 100%);
+    --theme-color: #243a48;
+    --menu-active: linear-gradient(180deg, #123696 0%, #13a0dd 61%);
+    --commentary: linear-gradient(180deg, #2A3A43 27%, #1C282D 83%);
+    --tabs: linear-gradient(180deg, #0A92A5 15%, #076875 100%);
+    --semi-dark: #444;
+    --dark: #212121;
+    --footer-menu-mobile:linear-gradient(-180deg, #243a48 20%, #172732 91%);
+    --m-stake:#ffbf19;
+    --log-button:linear-gradient(-180deg, #F72424 0%, #BB1C00 100%);
+    --white-bg: #fff;
+    --fancy-icon: #095964;
+    --marquee:#6AC2FF;
+    --filter:none;
+    --footer-menu-active-color:linear-gradient(-180deg, #32617f 20%, #1f4258 91%);
+    --footer-active-active-bg:url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nNzUnIGhlaWdodD0nMTYnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zyc+PGRlZnM+PGxpbmVhckdyYWRpZW50IHgxPSc1MCUnIHkxPScxOS41NiUnIHgyPSc1MCUnIHkyPSc5MC42NSUnIGlkPSdhJz48c3RvcCBzdG9wLWNvbG9yPScjMjQzYTQ4JyBvZmZzZXQ9JzAlJy8+PHN0b3Agc3RvcC1jb2xvcj0nIzI0M2E0OCcgb2Zmc2V0PScxMDAlJy8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHBhdGggZD0nTTc0Ljk4IDE2SDc1djUwSDBWMTZoLjAyQy43IDE1LjMzIDE2LjM2LjAyIDM3LjUuMDJ2OC04QzU4LjY0LjAyIDc0LjMgMTUuMzMgNzQuOTggMTZ6JyBmaWxsPScjMjQzYTQ4JyBmaWxsLXJ1bGU9J2V2ZW5vZGQnLz48L3N2Zz4=');
+  }
 .main-container {
     display: flex;
     flex-wrap: wrap;
@@ -49,8 +68,8 @@
     white-space: nowrap;
     overflow-x: auto; 
     -webkit-overflow-scrolling: touch;
-    margin-top: 15px;
-    height: 50px;
+    margin-top: 0px;
+    height: 48px;
     margin-bottom: 0px;
 }
 
@@ -519,7 +538,7 @@ marquee {
     margin: 0;
     font-size: 13px;
     padding: 3px 14px;
-    color: #000;
+    color: #000 !important;
     background: #fff !important;
     border-radius: 0;
     line-height: 20px;
@@ -565,4 +584,5 @@ marquee {
     text-align: center;
     height: 24px;
 }
+.sr-widget-1{margin-bottom:15px;box-shadow:#3c40434d 0 1px 2px,#3c404326 0 2px 6px 2px}
 /* Events List Page */
