@@ -45,18 +45,64 @@ class EventController extends Controller
  
     public function getEventDetails($eventId)
     {
-        
-
+        // Fetch event details from the first API
         $responseDetail = $this->httpClient->request('POST', "https://api.datalaser247.com/api/guest/event/{$eventId}");
+        $eventDetails = json_decode($responseDetail->getBody()->getContents(), true);
     
-        // Decode the JSON response
-        $responseBody = $responseDetail->getBody();
-        $eventDetails = json_decode($responseBody, true);
-        //dd($eventDetails);
+        // Extract the market_id from event details
+        $marketId = $eventDetails['data']['event']['match_odds']['market_id'];
+    
+        // Make a POST request to get market data from the second API
+        $responseMarketData = $this->httpClient->request('POST', 'https://odds.laser247.online/ws/getMarketDataNew', [
+            'headers' => [
+                'Content-Type' => 'application/x-www-form-urlencoded',
+            ],
+            'form_params' => [
+                'market_ids[]' => $marketId,
+            ],
+        ]);
+    
+        // Get the market data as a string
+        $marketDataString = trim($responseMarketData->getBody()->getContents());
+    
+        // Split the string into an array using the '|' delimiter
+        $marketDataArray = explode('|', $marketDataString);
+    
+        // Initialize arrays to hold the rows of data
+        $rows = [];
+        $currentOdds = [];
+        $currentValues = [];
+    
+        // Process the array to extract odds and values
+        $isActiveSection = false;
+        foreach ($marketDataArray as $data) {
+            if ($data === 'ACTIVE') {
+                // If we've already encountered an active section, push the current data to rows
+                if ($isActiveSection) {
+                    $rows[] = ['odds' => $currentOdds, 'values' => $currentValues];
+                    $currentOdds = [];
+                    $currentValues = [];
+                }
+                // Now start a new active section
+                $isActiveSection = true;
+            } elseif ($isActiveSection) {
+                if (is_numeric($data)) {
+                    if (count($currentOdds) === count($currentValues)) {
+                        $currentOdds[] = $data;
+                    } else {
+                        $currentValues[] = $data;
+                    }
+                }
+            }
+        }
+    
+        // Add the last set of odds and values if available
+        if (!empty($currentOdds) && !empty($currentValues)) {
+            $rows[] = ['odds' => $currentOdds, 'values' => $currentValues];
+        }
+    
+        // Initialize cURL session for the additional request
         $url = 'https://odds.cricbet99.club/ws/getScoreData';
-        
-    
-        // Initialize cURL session
         $ch = curl_init();
     
         // Set cURL options
@@ -84,16 +130,24 @@ class EventController extends Controller
     
         // Close the cURL session
         curl_close($ch);
-       
+    
         if ($httpStatusCode === 204) {
             return view('event_details', [
                 'message' => 'No content available for this event.'
             ]);
         }
-
-        // Return the raw HTML response directly to the Blade view
+    
+        // Return the combined data to the Blade view
         return view('event_details', [
-            'htmlContent' => $response, 'event_details'=>$eventDetails,'menuData' => $this->CommonController->list_menu(),'sidebarEvents'=>$this->CommonController->sidebar(),'menus'=>$this->CommonController->header_menus()
+            'htmlContent' => $response,
+            'eventDetails' => $eventDetails['data']['event'],
+            'rows' => $rows,
+            'menuData' => $this->CommonController->list_menu(),
+            'sidebarEvents' => $this->CommonController->sidebar(),
+            'menus' => $this->CommonController->header_menus(),
         ]);
     }
+    
+
+    
 }
