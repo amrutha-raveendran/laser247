@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\Http\Controllers\CommonController;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
 use Log;
 
 class EventController extends Controller
@@ -42,7 +43,7 @@ class EventController extends Controller
         $scoreData = $this->fetchScoreData($eventId);
 
         $message = $this->handleNoContentResponse($scoreData['status']);
-
+        //dd($marketData['rows']);
         return view('event_details', [
             'htmlContent' => $scoreData['content'],
             'eventDetails' => $eventDetails['data']['event'],
@@ -131,7 +132,7 @@ class EventController extends Controller
             $marketDataString = trim($response->getBody()->getContents());
             $marketDataArray = explode('|', $marketDataString);
 
-            $responses[$marketId] = $this->processMarketData($marketDataArray);
+            $responses[$marketId] = $marketDataString;//$this->processMarketData($marketDataArray);
         }
 
         return ['rows' => $responses];
