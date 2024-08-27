@@ -42,7 +42,7 @@ class EventController extends Controller
         $scoreData = $this->fetchScoreData($eventId);
 
         $message = $this->handleNoContentResponse($scoreData['status']);
-        //dd($marketData['rows']);
+
         return view('event_details', [
             'htmlContent' => $scoreData['content'],
             'eventDetails' => $eventDetails['data']['event'],
@@ -131,7 +131,7 @@ class EventController extends Controller
             $marketDataString = trim($response->getBody()->getContents());
             $marketDataArray = explode('|', $marketDataString);
 
-            $responses[$marketId] = $marketDataString;//$this->processMarketData($marketDataArray);
+            $responses[$marketId] = $marketDataString;
         }
 
         return ['rows' => $responses];
@@ -168,62 +168,127 @@ class EventController extends Controller
         return $httpStatusCode === 204 ? 'No content available for this event' : '';
     }
 
-
     public function showInPlayEvents()
     {
-        // Fetch in-play events
-        $events = $this->fetchInPlayEvents();
-    
+        // Fetch events from the API
+        $events = $this->fetchEvents();
+        
         // Fetch event types from the menu
         $eventTypes = $this->fetchEventTypes();
     
-        // Combine event types with events
-        $groupedEvents = $this->combineEventTypesWithEvents($events, $eventTypes);
-    
+        // Group events by their type and status
+        $groupedEvents = $this->categorizeEvents($events, $eventTypes);
+ // Extract market_ids from the categorized events
+ $marketIds = $this->extractMarketInIds($groupedEvents);
+
+
+ $marketData = $this->fetchMarketData(array_unique($marketIds));
         return view('inplay_events', [
+            'rows' =>  $marketData,
             'menuData' => $this->commonController->list_menu(),
             'groupedEvents' => $groupedEvents,
             'sidebarEvents' => $this->commonController->sidebar(),
             'menus' => $this->commonController->header_menus(),
         ]);
     }
-
-    private function fetchInPlayEvents()
-    {
-        // Call the API to get in-play events
-        $response = Http::get('https://api.datalaser247.com/api/guest/event_list');
-        $events = $response->json('data.events');
-
-        // Filter events based on in_play flag
-        return collect($events)->filter(function ($event) {
-            return $event['in_play'] == 1;
-        });
-    }
-
+    
+   
+    
     private function fetchEventTypes()
     {
-        // Call the API to get event types from the menu
         $response = $this->httpClient->request('GET', 'https://api.datalaser247.com/api/guest/menu');
         $menuData = json_decode($response->getBody()->getContents(), true);
-    
-        // Extract event types from the menu data
         return collect($menuData['data']['menu'])->pluck('name', 'id');
     }
+    
+    private function categorizeEvents($events, $eventTypes)
+    {
+        // Group events by event type ID and filter based on status
+        $groupedEvents = [
+            'In-Play' => [],
+            'Today' => [],
+            'Tomorrow' => [],
+        ];
+    
+        foreach ($events as $event) {            
+    
+            $eventTypeId = $event['event_type_id'];
+            $eventTypeName = $eventTypes->get($eventTypeId, 'Unknown');
+    
+            // Determine the event status
+            if (isset($event['open_date'])) {
+                $eventDate = \Carbon\Carbon::parse($event['open_date']);
+            } else {
+                // If open_date is not available, use a default date or skip
+                $eventDate = \Carbon\Carbon::now()->subDays(1); // Example: assume it is yesterday
+            }
+    
+            $now = \Carbon\Carbon::now();
+    
+            if ($event['in_play'] == 1) {
+                $groupedEvents['In-Play'][$eventTypeName][] = $event;
+            } elseif ($eventDate->isToday()) {
+                $groupedEvents['Today'][$eventTypeName][] = $event;
+            } elseif ($eventDate->isTomorrow()) {
+                $groupedEvents['Tomorrow'][$eventTypeName][] = $event;
+            }
+        }
 
-    private function combineEventTypesWithEvents($events, $eventTypes)
+ //$groupedEvents = $this->addMarketDataToGroupedEvents($groupedEvents, $marketData);
+
+        return $groupedEvents;
+    }
+
+
+    private function extractMarketInIds($groupedEvents)
 {
-    // Group events by event type ID
-    $groupedEvents = $events->groupBy('event_type_id');
+    $marketIds = [];
 
-    // Combine event types with events
-    $combinedData = [];
-    foreach ($eventTypes as $eventTypeId => $eventTypeName) {
-        if (isset($groupedEvents[$eventTypeId])) {
-            $combinedData[$eventTypeName] = $groupedEvents[$eventTypeId];
+    foreach ($groupedEvents as $status => $eventTypes) {
+        foreach ($eventTypes as $eventTypeName => $events) {
+            foreach ($events as $event) {
+                if (isset($event['market_id'])) {
+                    $marketIds[] = $event['market_id'];
+                }
+            }
         }
     }
 
-    return $combinedData;
+    return $marketIds;
 }
 
+private function addMarketDataToGroupedEvents($groupedEvents, $marketData)
+{
+    foreach ($groupedEvents as $groupKey => &$group) {
+        foreach ($group as $eventType => &$events) {
+            foreach ($events as $index => &$event) {
+                // Ensure 'market_id' is present and convert it to a string
+                $marketId = (string)trim($event['market_id']);
+// //dd($marketId);
+// dd($marketData["rows"][$marketId]);
+                // Debugging: Check if the key exists
+                if (isset($marketData["rows"][$marketId])) {
+                   
+                    // Access the market data
+                    $groupedEvents[$groupKey][$eventType][$index]['market_data'] = $marketData["rows"][$marketId];
+                } else {
+                   
+                    // Handle missing market data
+                    $groupedEvents[$groupKey][$eventType][$index]['market_data'] = null;
+                    
+                    // Debugging output
+                    error_log("Market data not found for market ID: " . $marketId);
+
+                    // Output available keys for further debugging
+                    error_log("Available keys in marketData: " . implode(', ', array_keys($marketData)));
+                }
+            }
+        }
+    }
+
+    return $groupedEvents;
+}
+
+
+    
 }
