@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use App\Http\Controllers\CommonController;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
+use App\Helpers\CustomHelper;
 use Log;
 
 class EventController extends Controller
@@ -38,8 +39,6 @@ class EventController extends Controller
         $eventDetails = $this->fetchEventDetails($eventId);
         $marketIds = $this->extractMarketIds($eventDetails['data']['event']);
         $marketData = $this->fetchMarketData($marketIds);
-  
-
         $scoreData = $this->fetchScoreData($eventId);
 
         $message = $this->handleNoContentResponse($scoreData['status']);
@@ -136,39 +135,6 @@ class EventController extends Controller
         }
 
         return ['rows' => $responses];
-    }
-
-    private function processMarketData($marketDataArray)
-    {
-        $rows = [];
-        $currentOdds = [];
-        $currentValues = [];
-        $isActiveSection = false;
-
-        foreach ($marketDataArray as $data) {
-            if ($data === 'ACTIVE') {
-                if ($isActiveSection) {
-                    $rows[] = ['odds' => $currentOdds, 'values' => $currentValues];
-                    $currentOdds = [];
-                    $currentValues = [];
-                }
-                $isActiveSection = true;
-            } elseif ($isActiveSection) {
-                if (is_numeric($data)) {
-                    if (count($currentOdds) === count($currentValues)) {
-                        $currentOdds[] = $data;
-                    } else {
-                        $currentValues[] = $data;
-                    }
-                }
-            }
-        }
-
-        if (!empty($currentOdds) && !empty($currentValues)) {
-            $rows[] = ['odds' => $currentOdds, 'values' => $currentValues];
-        }
-
-        return $rows;
     }
 
     private function fetchScoreData($eventId)
