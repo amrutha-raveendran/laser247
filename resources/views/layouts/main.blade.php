@@ -13,10 +13,6 @@
     <link href="{{ asset('assets/css/icons.min.css')}}" rel="stylesheet"  crossorigin="anonymous">
     <!-- <link href="{{ asset('assets/css/bootstrap-icons.css')}}" rel="stylesheet"  crossorigin="anonymous"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-
-     
-
     <title>Laser247</title>
   </head>
 <nav class="navbar navbar-expand-lg navbar-light navbar-bg">
@@ -103,5 +99,6 @@ menuLinks.forEach(function(link) {
 });
 
       </script>
+      <script src="{{ asset('assets/js/bootstrap.bundle.min.js')}}"></script>
 </body>
 </html>

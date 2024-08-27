@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Client;
 use App\Http\Controllers\CommonController;
+use App\Helpers\CustomHelper;
 use Illuminate\Support\Collection;
 use Log;
 class EventController extends Controller
@@ -42,7 +43,32 @@ class EventController extends Controller
 
       return view('events', ['menuData' => $this->CommonController->list_menu(), 'groupedEvents' => $groupedEvents,'sidebarEvents'=>$this->CommonController->sidebar(),'menus'=>$this->CommonController->header_menus()]);
     }
- 
+    
+    public function testfunction()
+    {
+        $response = Http::get('https://api.datalaser247.com/api/guest/menu');
+        $side_events= json_decode($response->getBody(),true);
+
+       // Fetch data from the API
+    $response = Http::get('https://api.datalaser247.com/api/guest/events');
+    $events = $response->json('data.events');
+    $data = $response->json();
+    // Mock data for sidebar (replace this with actual API call if needed)
+
+    // Prepare events grouped by event_type_id
+    $groupedEvents = [];
+    foreach ($events as $event) {
+        $eventTypeId = $event['event_type_id'];
+        if (!isset($groupedEvents[$eventTypeId])) {
+            $groupedEvents[$eventTypeId] = [];
+        }
+        $groupedEvents[$eventTypeId][] = $event;
+    }
+    $groupedEvents = collect($groupedEvents);
+   
+
+      return view('test_event', ['menuData' => $this->CommonController->list_menu(), 'groupedEvents' => $groupedEvents,'sidebarEvents'=>$this->CommonController->sidebar(),'menus'=>$this->CommonController->header_menus(),'side_events'=>$side_events,'evnt_list'=>$events]);
+    }
     public function getEventDetails($eventId)
     {
         

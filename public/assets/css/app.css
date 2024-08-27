@@ -2,7 +2,8 @@
     /* font-family:  Helvetica, sans-serif !important; */
 }
 :root {
-    --theme-navbar: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%);
+    /* --theme-navbar: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%); */
+    --theme-navbar: linear-gradient(90deg, rgb(199 15 152) 0%, rgb(206 23 61) 35%, rgb(17 213 231) 100%);
     --top-navbar: linear-gradient(180deg, #5f7fdb 0, #0cddff 100%);
     --theme-color: #243a48;
     --menu-active: linear-gradient(180deg, #123696 0%, #13a0dd 61%);
@@ -32,7 +33,8 @@
 }
 .navbar-bg {
     /* background: #7e0b0b; */
-    background:#ffc107;
+    /* background:#ffc107; */
+    background: var(--theme-navbar);
 }
 .navbar-ul a{
     color:ffff;
@@ -62,7 +64,7 @@
     /* background: linear-gradient(180deg, #5f7fdb 0, #0cddff 100%); */
     /* background: #1f43ae; */
     background: #7e0b0b;
-    margin-bottom: 18px;
+    margin-bottom: 0px;
 }
 .topnav-div{
     white-space: nowrap;
@@ -438,7 +440,7 @@ marquee {
 
 .content {
     padding-left: 4px;
-    display: none;
+    /* display: none; */
     overflow: hidden;
 }
 
@@ -548,11 +550,13 @@ marquee {
 .event-tab-content span{
     font-weight: 500;
     display: flex;
+    margin-left: 11px;
 
 }
 .event-games ul {
     margin: 0;
     background: #fff;
+    margin-left: 5px;
 }
 .event-games ul li{
     padding: 5px 0;
@@ -561,20 +565,17 @@ marquee {
 .event-games ul li a{
     text-decoration: none;
     color: #2789ce;
-    font-weight: 500;
+    font-weight: 700;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     width: calc(100% - 13px);
     line-height: normal;
     display: block;
-    font-size: 14px;
-}
-.event-games-li{
-
+    font-size: 12px;
 }
 .in-play {
-    font-weight: 900;
+    font-weight: 900 !important;
     color: #508d0e;
     margin-right: 5px;
     font-size: 12px;
