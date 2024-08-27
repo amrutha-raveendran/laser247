@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\MarketDataController;
 
 Route::get('/dashboard', [EventController::class, 'showDashboard'])->name('dashboard');
 
@@ -15,8 +16,7 @@ Route::get('/event/{eventId}', [EventController::class, 'getEventDetails'])->nam
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-
-use App\Http\Controllers\MarketDataController;
-
 Route::post('/fetch-market-data', [MarketDataController::class, 'getMarketData']);
+
+Route::get('/inplay', [EventController::class, 'showInPlayEvents'])->name('events.inplay');
 

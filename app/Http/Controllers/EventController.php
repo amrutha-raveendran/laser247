@@ -167,4 +167,63 @@ class EventController extends Controller
     {
         return $httpStatusCode === 204 ? 'No content available for this event' : '';
     }
+
+
+    public function showInPlayEvents()
+    {
+        // Fetch in-play events
+        $events = $this->fetchInPlayEvents();
+    
+        // Fetch event types from the menu
+        $eventTypes = $this->fetchEventTypes();
+    
+        // Combine event types with events
+        $groupedEvents = $this->combineEventTypesWithEvents($events, $eventTypes);
+    
+        return view('inplay_events', [
+            'menuData' => $this->commonController->list_menu(),
+            'groupedEvents' => $groupedEvents,
+            'sidebarEvents' => $this->commonController->sidebar(),
+            'menus' => $this->commonController->header_menus(),
+        ]);
+    }
+
+    private function fetchInPlayEvents()
+    {
+        // Call the API to get in-play events
+        $response = Http::get('https://api.datalaser247.com/api/guest/event_list');
+        $events = $response->json('data.events');
+
+        // Filter events based on in_play flag
+        return collect($events)->filter(function ($event) {
+            return $event['in_play'] == 1;
+        });
+    }
+
+    private function fetchEventTypes()
+    {
+        // Call the API to get event types from the menu
+        $response = $this->httpClient->request('GET', 'https://api.datalaser247.com/api/guest/menu');
+        $menuData = json_decode($response->getBody()->getContents(), true);
+    
+        // Extract event types from the menu data
+        return collect($menuData['data']['menu'])->pluck('name', 'id');
+    }
+
+    private function combineEventTypesWithEvents($events, $eventTypes)
+{
+    // Group events by event type ID
+    $groupedEvents = $events->groupBy('event_type_id');
+
+    // Combine event types with events
+    $combinedData = [];
+    foreach ($eventTypes as $eventTypeId => $eventTypeName) {
+        if (isset($groupedEvents[$eventTypeId])) {
+            $combinedData[$eventTypeName] = $groupedEvents[$eventTypeId];
+        }
+    }
+
+    return $combinedData;
+}
+
 }
