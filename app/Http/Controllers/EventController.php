@@ -233,9 +233,6 @@ class EventController extends Controller
                 $groupedEvents['Tomorrow'][$eventTypeName][] = $event;
             }
         }
-
- //$groupedEvents = $this->addMarketDataToGroupedEvents($groupedEvents, $marketData);
-
         return $groupedEvents;
     }
 
@@ -256,39 +253,5 @@ class EventController extends Controller
 
     return $marketIds;
 }
-
-private function addMarketDataToGroupedEvents($groupedEvents, $marketData)
-{
-    foreach ($groupedEvents as $groupKey => &$group) {
-        foreach ($group as $eventType => &$events) {
-            foreach ($events as $index => &$event) {
-                // Ensure 'market_id' is present and convert it to a string
-                $marketId = (string)trim($event['market_id']);
-// //dd($marketId);
-// dd($marketData["rows"][$marketId]);
-                // Debugging: Check if the key exists
-                if (isset($marketData["rows"][$marketId])) {
-                   
-                    // Access the market data
-                    $groupedEvents[$groupKey][$eventType][$index]['market_data'] = $marketData["rows"][$marketId];
-                } else {
-                   
-                    // Handle missing market data
-                    $groupedEvents[$groupKey][$eventType][$index]['market_data'] = null;
-                    
-                    // Debugging output
-                    error_log("Market data not found for market ID: " . $marketId);
-
-                    // Output available keys for further debugging
-                    error_log("Available keys in marketData: " . implode(', ', array_keys($marketData)));
-                }
-            }
-        }
-    }
-
-    return $groupedEvents;
-}
-
-
     
 }
