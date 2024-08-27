@@ -7,7 +7,7 @@ use App\Http\Controllers\CommonController;
 use App\Helpers\CustomHelper;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
-use App\Helpers\CustomHelper;
+
 use Log;
 
 class EventController extends Controller
