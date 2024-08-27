@@ -15,6 +15,7 @@ Route::get('/dashboard', [EventController::class, 'showDashboard'])->name('dashb
 Route::get('/event/{eventId}', [EventController::class, 'getEventDetails'])->name('event.details');
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('events', [EventController::class, 'testfunction'])->name('events');
 
 Route::post('/fetch-market-data', [MarketDataController::class, 'getMarketData']);
 

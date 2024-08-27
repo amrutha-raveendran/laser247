@@ -69,6 +69,11 @@ class CommonController extends Controller
         $sidebarEvents = collect($data['data']['events'])->groupBy(['event_type_id', 'competition_name']);
         return $sidebarEvents;
     }
+    public function sidebar_menu()
+    {
+        $response = Http::get('https://api.datalaser247.com/api/guest/menu');
+        dd($response);
+    }
     public function list_menu()
     {
         $menuData = [
