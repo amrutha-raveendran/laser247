@@ -153,7 +153,7 @@
                     <div  id="topnav-menu-content" class="collapse navbar-collapse">
                     <ul  class="navbar-nav">
                         <li  class="nav-item"><a  href="{{route('dashboard')}}" routerlinkactive="active">home</a></li>
-                        <li  class="nav-item"><a  href="#/guest/inplay" routerlinkactive="active">in-play</a></li>
+                        <li  class="nav-item"><a  href="{{ route('events.inplay')}}" routerlinkactive="active">in-play</a></li>
                         @if(isset($menus['evnt_list']['data']['menu']) && is_array($menus['evnt_list']['data']['menu']))
                         @foreach($menus['evnt_list']['data']['menu'] as $menuItem)
                             @if(isset($menuItem['name']) )

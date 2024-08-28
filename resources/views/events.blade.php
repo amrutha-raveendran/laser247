@@ -1,6 +1,8 @@
 @extends('layouts.main-demo')
 @section('content')
+<!-- Sidebar -->
 @include('components.side_new')
+<!-- Sidebar -->
 <div  class="content-page">
       <div  class="content">
             <div  class="container-fluid">
@@ -81,7 +83,7 @@
                                                                   </ul> 
                                                                   <div class="asxr"></div>
                                                                   <div class="tab-content  event-tab-content  mt-3" id="myTabContent">
-                                                                              @foreach ($menuData as $menuItem)
+                                                                        @foreach ($menuData as $menuItem)
                                                                               <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }} event-games" id="content-{{ $menuItem['id'] }}" role="tabpanel" aria-labelledby="tab-{{ $menuItem['id'] }}">
                                                                                     @if (isset($groupedEvents[$menuItem['id']]))
                                                                                           <ul>
@@ -105,7 +107,7 @@
                                                                                           <p>No events available for this category.</p>
                                                                                     @endif
                                                                               </div>
-                                                            @endforeach
+                                                                        @endforeach
                                                                   </div>
                                                             </div> 
                                                       </div>
@@ -115,7 +117,9 @@
                               </div>
 
                         </div>
+                        <!-- Right Sidebar -->
                         @include('components.bet_sidebar')
+                        <!-- Right Sidebar -->
                   </div>
             </div>
       </div>
