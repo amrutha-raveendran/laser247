@@ -20,5 +20,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         require_once app_path('Helpers/RunnerHelper.php');
+        // Register MenuService as a Singleton
+    $this->app->singleton(\App\Services\MenuService::class, function ($app) {
+        return new \App\Services\MenuService(new \GuzzleHttp\Client());
+    });
     }
 }

@@ -1,25 +1,27 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
-use App\Http\Controllers\CommonController;
-use App\Helpers\CustomHelper;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
-
+use App\Services\MenuService;
 use Log;
+use Illuminate\Http\Client\Pool;
+use Illuminate\Support\Facades\Cache;
 
 class EventController extends Controller
 {
     protected $httpClient;
     protected $commonController;
+    protected $menuService;
 
-    public function __construct()
+    public function __construct(MenuService $menuService)
     {
         $this->httpClient = new Client();
         $this->commonController = new CommonController();
-        // $this->middleware('auth');
+        $this->menuService = $menuService;
     }
 
     public function showDashboard()
@@ -33,61 +35,61 @@ class EventController extends Controller
             'sidebarEvents' => $this->commonController->sidebar(),
             'menus' => $this->commonController->header_menus()
         ]);
-    
-
-      return view('events', ['menuData' => $this->CommonController->list_menu(), 'groupedEvents' => $groupedEvents,'sidebarEvents'=>$this->CommonController->sidebar(),'menus'=>$this->CommonController->header_menus()]);
     }
-    
+
     public function testfunction()
     {
-        $response = Http::get('https://api.datalaser247.com/api/guest/menu');
-        $side_events= json_decode($response->getBody(),true);
+        $sideEvents = Cache::remember('side_events', 60, function () {
+            return Http::get('https://api.datalaser247.com/api/guest/menu')->json();
+        });
+        
+        $events = Cache::remember('events', 60, function () {
+            return Http::get('https://api.datalaser247.com/api/guest/events')->json('data.events');
+        });
 
-       // Fetch data from the API
-    $response = Http::get('https://api.datalaser247.com/api/guest/events');
-    $events = $response->json('data.events');
-    $data = $response->json();
-    // Mock data for sidebar (replace this with actual API call if needed)
+        $groupedEvents = $this->groupEventsByType($events);
 
-    // Prepare events grouped by event_type_id
-    $groupedEvents = [];
-    foreach ($events as $event) {
-        $eventTypeId = $event['event_type_id'];
-        if (!isset($groupedEvents[$eventTypeId])) {
-            $groupedEvents[$eventTypeId] = [];
-        }
-        $groupedEvents[$eventTypeId][] = $event;
+        return view('test_event', [
+            'menuData' => $this->commonController->list_menu(),
+            'groupedEvents' => $groupedEvents,
+            'sidebarEvents' => $this->commonController->sidebar(),
+            'menus' => $this->commonController->header_menus(),
+            'side_events' => $sideEvents,
+            'evnt_list' => $events
+        ]);
     }
-    $groupedEvents = collect($groupedEvents);
-   
 
-      return view('test_event', ['menuData' => $this->CommonController->list_menu(), 'groupedEvents' => $groupedEvents,'sidebarEvents'=>$this->CommonController->sidebar(),'menus'=>$this->CommonController->header_menus(),'side_events'=>$side_events,'evnt_list'=>$events]);
-    }
     public function getEventDetails($eventId)
     {
         $eventDetails = $this->fetchEventDetails($eventId);
-        $marketIds = $this->extractMarketIds($eventDetails['data']['event']);
+        $marketIds = $this->extractMarketIds($eventDetails['data']['event'] ?? []);
         $marketData = $this->fetchMarketData($marketIds);
         $scoreData = $this->fetchScoreData($eventId);
 
-        $message = $this->handleNoContentResponse($scoreData['status']);
-
         return view('event_details', [
             'htmlContent' => $scoreData['content'],
-            'eventDetails' => $eventDetails['data']['event'],
+            'eventDetails' => $eventDetails['data']['event'] ?? [],
             'event_details' => $eventDetails,
             'rows' => $marketData['rows'],
-            'message' => $message,
+            'message' => $this->handleNoContentResponse($scoreData['status']),
             'menuData' => $this->commonController->list_menu(),
             'sidebarEvents' => $this->commonController->sidebar(),
-            'menus' => $this->commonController->header_menus(),
+            'menus' => $this->commonController->header_menus()
         ]);
     }
 
     private function fetchEvents()
     {
-        $response = Http::get('https://api.datalaser247.com/api/guest/events');
-        return $response->json('data.events');
+        return Cache::remember('events', 60, function () {
+            try {
+                $response = $this->httpClient->get('https://api.datalaser247.com/api/guest/events');
+                $data = json_decode($response->getBody()->getContents(), true);
+                return $data['data']['events'] ?? [];
+            } catch (\Exception $e) {
+                Log::error('Failed to fetch events: ' . $e->getMessage());
+                return [];
+            }
+        });
     }
 
     private function groupEventsByType($events)
@@ -95,9 +97,6 @@ class EventController extends Controller
         $groupedEvents = [];
         foreach ($events as $event) {
             $eventTypeId = $event['event_type_id'];
-            if (!isset($groupedEvents[$eventTypeId])) {
-                $groupedEvents[$eventTypeId] = [];
-            }
             $groupedEvents[$eventTypeId][] = $event;
         }
         return collect($groupedEvents);
@@ -105,65 +104,63 @@ class EventController extends Controller
 
     private function fetchEventDetails($eventId)
     {
-        $response = $this->httpClient->request('POST', "https://api.datalaser247.com/api/guest/event/{$eventId}");
-        return json_decode($response->getBody()->getContents(), true);
+        $cacheKey = "event_details_{$eventId}";
+        $cacheTTL = 60;
+
+        return Cache::remember($cacheKey, $cacheTTL, function () use ($eventId) {
+            try {
+                $response = Http::timeout(10)->post("https://api.datalaser247.com/api/guest/event/{$eventId}");
+
+                if ($response->failed()) {
+                    throw new \Exception("Failed to fetch event details: Status Code {$response->status()} - {$response->body()}");
+                }
+
+                $data = $response->json();
+                if (!isset($data['data'])) {
+                    throw new \Exception('Invalid response structure');
+                }
+
+                return $data;
+            } catch (\Exception $e) {
+                Log::error("Error fetching event details: " . $e->getMessage());
+                return null;
+            }
+        });
     }
 
     private function extractMarketIds($event)
     {
         $marketIds = [];
 
-        // Extract from match_odds
-        if (isset($event['match_odds']['market_id'])) {
-            $marketIds[] = $event['match_odds']['market_id'];
-        }
+        $this->extractFromEvent($event, $marketIds, 'match_odds');
+        $this->extractFromEvent($event, $marketIds, 'book_makers');
+        $this->extractFromEvent($event, $marketIds, 'fancy');
+        $this->extractFromEvent($event, $marketIds, 'markets');
 
-        // Extract from book_makers
-        if (isset($event['book_makers']) && is_array($event['book_makers'])) {
-            foreach ($event['book_makers'] as $bookMaker) {
-                if (isset($bookMaker['market_id'])) {
-                    $marketIds[] = $bookMaker['market_id'];
-                }
-            }
-        }
-
-        // Extract from fancy
-        if (isset($event['fancy']) && is_array($event['fancy'])) {
-            foreach ($event['fancy'] as $fancy) {
-                if (isset($fancy['market_id'])) {
-                    $marketIds[] = $fancy['market_id'];
-                }
-            }
-        }
-
-        // Extract from markets
-        if (isset($event['markets']) && is_array($event['markets'])) {
-            foreach ($event['markets'] as $market) {
-                if (isset($market['market_id'])) {
-                    $marketIds[] = $market['market_id'];
-                }
-            }
-        }
-
-        return array_unique($marketIds); // Ensure market IDs are unique
+        return array_unique($marketIds);
     }
 
-    private function fetchMarketData($marketIds)
+    private function extractFromEvent($event, &$marketIds, $key)
     {
-        $responses = [];
-        foreach ($marketIds as $marketId) {
-            $response = $this->httpClient->request('POST', 'https://odds.laser247.online/ws/getMarketDataNew', [
-                'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
-                'form_params' => ['market_ids[]' => $marketId],
-            ]);
-
-            $marketDataString = trim($response->getBody()->getContents());
-            $marketDataArray = explode('|', $marketDataString);
-
-            $responses[$marketId] = $marketDataString;
+        if (isset($event[$key]) && is_array($event[$key])) {
+            foreach ($event[$key] as $item) {
+                if (isset($item['market_id'])) {
+                    $marketIds[] = $item['market_id'];
+                }
+            }
         }
+    }
 
-        return ['rows' => $responses];
+    private function fetchMarketData(array $marketIds)
+    {
+        $responses = Http::pool(fn(Pool $pool) => array_map(fn($marketId) => $pool->post('https://odds.laser247.online/ws/getMarketDataNew', [
+            'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
+            'form_params' => ['market_ids[]' => $marketId],
+        ]), $marketIds));
+
+        return [
+            'rows' => array_map(fn($response) => trim($response->body()), $responses)
+        ];
     }
 
     private function fetchScoreData($eventId)
@@ -199,61 +196,35 @@ class EventController extends Controller
 
     public function showInPlayEvents()
     {
-        // Fetch events from the API
         $events = $this->fetchEvents();
-        
-        // Fetch event types from the menu
-        $eventTypes = $this->fetchEventTypes();
-    
-        // Group events by their type and status
+        $eventTypes = $this->menuService->getMenuData();
         $groupedEvents = $this->categorizeEvents($events, $eventTypes);
- // Extract market_ids from the categorized events
- $marketIds = $this->extractMarketInIds($groupedEvents);
+        $marketIds = $this->extractMarketInIds($groupedEvents);
+        $marketData = $this->fetchMarketData(array_unique($marketIds));
 
-
- $marketData = $this->fetchMarketData(array_unique($marketIds));
         return view('inplay_events', [
-            'rows' =>  $marketData,
+            'rows' => $marketData,
             'menuData' => $this->commonController->list_menu(),
             'groupedEvents' => $groupedEvents,
             'sidebarEvents' => $this->commonController->sidebar(),
-            'menus' => $this->commonController->header_menus(),
+            'menus' => $this->commonController->header_menus()
         ]);
     }
-    
-   
-    
-    private function fetchEventTypes()
-    {
-        $response = $this->httpClient->request('GET', 'https://api.datalaser247.com/api/guest/menu');
-        $menuData = json_decode($response->getBody()->getContents(), true);
-        return collect($menuData['data']['menu'])->pluck('name', 'id');
-    }
-    
+
     private function categorizeEvents($events, $eventTypes)
     {
-        // Group events by event type ID and filter based on status
         $groupedEvents = [
             'In-Play' => [],
             'Today' => [],
-            'Tomorrow' => [],
+            'Tomorrow' => []
         ];
-    
-        foreach ($events as $event) {            
-    
+
+        foreach ($events as $event) {
             $eventTypeId = $event['event_type_id'];
             $eventTypeName = $eventTypes->get($eventTypeId, 'Unknown');
-    
-            // Determine the event status
-            if (isset($event['open_date'])) {
-                $eventDate = \Carbon\Carbon::parse($event['open_date']);
-            } else {
-                // If open_date is not available, use a default date or skip
-                $eventDate = \Carbon\Carbon::now()->subDays(1); // Example: assume it is yesterday
-            }
-    
+            $eventDate = isset($event['open_date']) ? \Carbon\Carbon::parse($event['open_date']) : \Carbon\Carbon::now()->subDays(1);
             $now = \Carbon\Carbon::now();
-    
+
             if ($event['in_play'] == 1) {
                 $groupedEvents['In-Play'][$eventTypeName][] = $event;
             } elseif ($eventDate->isToday()) {
@@ -265,22 +236,20 @@ class EventController extends Controller
         return $groupedEvents;
     }
 
-
     private function extractMarketInIds($groupedEvents)
-{
-    $marketIds = [];
+    {
+        $marketIds = [];
 
-    foreach ($groupedEvents as $status => $eventTypes) {
-        foreach ($eventTypes as $eventTypeName => $events) {
-            foreach ($events as $event) {
-                if (isset($event['market_id'])) {
-                    $marketIds[] = $event['market_id'];
+        foreach ($groupedEvents as $eventTypes) {
+            foreach ($eventTypes as $events) {
+                foreach ($events as $event) {
+                    if (isset($event['market_id'])) {
+                        $marketIds[] = $event['market_id'];
+                    }
                 }
             }
         }
-    }
 
-    return $marketIds;
-}
-    
+        return $marketIds;
+    }
 }
