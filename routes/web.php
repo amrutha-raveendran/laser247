@@ -12,6 +12,7 @@ use App\Http\Controllers\MarketDataController;
 
 Route::get('/dashboard', [EventController::class, 'showDashboard'])->name('dashboard');
 
+
 Route::get('/event/{eventId}', [EventController::class, 'getEventDetails'])->name('event.details');
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
