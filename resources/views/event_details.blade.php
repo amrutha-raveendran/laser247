@@ -16,7 +16,10 @@
                             </div>
                         </div>
                         <div class="col-md-12">
-                            
+                            @if(isset($htmlContent) && !empty($htmlContent))
+                            <!-- Display the HTML content -->
+                            {!! $htmlContent !!}
+                            @endif
                         </div>
                         <!-- Event Details -->
                         @if(isset($event_details['data']['event']))
