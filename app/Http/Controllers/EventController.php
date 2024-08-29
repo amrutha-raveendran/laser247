@@ -10,6 +10,9 @@ use App\Services\MenuService;
 use Log;
 use Illuminate\Http\Client\Pool;
 use Illuminate\Support\Facades\Cache;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Promise;
+use GuzzleHttp\Promise\Utils;
 
 class EventController extends Controller
 {
@@ -151,18 +154,52 @@ class EventController extends Controller
         }
     }
 
+
+
     private function fetchMarketData(array $marketIds)
     {
-        $responses = Http::pool(fn(Pool $pool) => array_map(fn($marketId) => $pool->post('https://odds.laser247.online/ws/getMarketDataNew', [
-            'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
-            'form_params' => ['market_ids[]' => $marketId],
-        ]), $marketIds));
-
-        return [
-            'rows' => array_map(fn($response) => trim($response->body()), $responses)
-        ];
+        $batchSize = 50; 
+        $batches = array_chunk($marketIds, $batchSize);
+        $results = [];
+        
+        foreach ($batches as $batch) {
+            $promise = $this->httpClient->postAsync('https://odds.laser247.online/ws/getMarketDataNew', [
+                'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
+                'form_params' => ['market_ids' => $batch],
+                'timeout' => 10,
+            ])->then(
+                function ($response) {                   
+                    $marketDataString = trim($response->getBody()->getContents());
+                    Log::debug('Market data response:', ['response' => $marketDataString]);                    
+                    
+                    // Assuming the API response is in JSON format, decode it
+                    return json_decode($marketDataString, true);  // Decode the JSON response to an array
+                }
+            )->otherwise(
+                function (\Exception $e) {  // Catch all exceptions
+                    Log::error('Error fetching market data: ' . $e->getMessage());
+                    return ['Error' => []];  // Return the error in a structured way
+                }
+            );
+    
+            $batchResult = $promise->wait();
+    
+            foreach ($batch as $index => $marketId) {
+                if (isset($batchResult[$index])) {
+                    $results[$marketId] = $batchResult[$index];
+                } else {
+                    $results[$marketId] = [];
+                }
+            }
+        }
+    
+        Log::debug('Fetched market data:', ['results' => $results]);
+        // Do not use dd in production, only for debugging purposes. Consider returning or processing the results further.
+        return ['rows' => $results];
     }
-
+    
+    
+    
     private function fetchScoreData($eventId)
     {
         $url = 'https://odds.cricbet99.club/ws/getScoreData';
@@ -201,7 +238,7 @@ class EventController extends Controller
         $groupedEvents = $this->categorizeEvents($events, $eventTypes);
         $marketIds = $this->extractMarketInIds($groupedEvents);
         $marketData = $this->fetchMarketData(array_unique($marketIds));
-
+//dd($marketIds);
         return view('inplay_events', [
             'rows' => $marketData,
             'menuData' => $this->commonController->list_menu(),
@@ -252,4 +289,21 @@ class EventController extends Controller
 
         return $marketIds;
     }
+    public function fetchInPlayEvents()
+    {
+        // Fetch in-play events data from the API or other source
+        $response = Http::get('API_URL'); // Replace 'API_URL' with your actual API endpoint
+
+        $data = $response->json();
+
+        // Example structure, adjust based on actual API response
+        $groupedEvents = $data['groupedEvents'];
+        $marketData = $data['marketData'];
+
+        return response()->json([
+            'groupedEvents' => $groupedEvents,
+            'marketData' => $marketData
+        ]);
+    }
+
 }
