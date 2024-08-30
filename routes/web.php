@@ -21,4 +21,6 @@ Route::get('events', [EventController::class, 'testfunction'])->name('events');
 Route::post('/fetch-market-data', [MarketDataController::class, 'getMarketData']);
 
 Route::get('/inplay', [EventController::class, 'showInPlayEvents'])->name('events.inplay');
+Route::get('/sports/{sportId}', [EventController::class, 'showSports'])->name('events.sports');
+
 

@@ -28,7 +28,7 @@
             @if($teamOdds)
                 <div class="row mx-0 odds_body">          
                     <div class="col-md-5 col-7 px-0">
-                        <p class="team-name">{{ $bkmakr['name'] }}</p>
+                        <p class="team-name">{{ $bkmakr['name'] .'dhfjdh'}}</p>
                     </div>
                     <div class="col-md-7 col-5 px-0">
                         <div class="btn-group dOddsBox">

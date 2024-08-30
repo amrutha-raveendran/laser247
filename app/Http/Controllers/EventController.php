@@ -10,6 +10,7 @@ use App\Services\MenuService;
 use Log;
 use Illuminate\Http\Client\Pool;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
 {
@@ -29,12 +30,52 @@ class EventController extends Controller
         $events = $this->fetchEvents();
         $groupedEvents = $this->groupEventsByType($events);
 
-        return view('events', [
+        return view('dashboard', [
             'menuData' => $this->commonController->list_menu(),
             'groupedEvents' => $groupedEvents,
             'sidebarEvents' => $this->commonController->sidebar(),
             'menus' => $this->commonController->header_menus()
         ]);
+    }
+    public function showSports($sportId)
+    {
+        if($sportId=='99999')
+        {
+            try {
+                $response = Http::get('https://laser247.online/assets/data/inner-page-royal-casino.json');
+                $casino_events = json_decode($response->getBody(), true);
+
+                if(is_array($casino_events))
+                    return view('casino_events', [
+                        'casino_events' => $casino_events,
+                        'menuData' => $this->commonController->list_menu(),
+                        'sidebarEvents' => $this->commonController->sidebar(),
+                        'menus' => $this->commonController->header_menus()
+                    ]);
+    
+            } catch (\Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 500);
+            } 
+        }
+        else if($sportId=='99995')
+        {
+            try {
+                $response = Http::get('https://api.datalaser247.com/api/guest/casino_int');
+                
+                $intcasino_events = json_decode($response->getBody(), true);
+                if(is_array($intcasino_events))
+                    return view('intcasino_events', [
+                        'intcasino_events' => $intcasino_events,
+                        'menuData' => $this->commonController->list_menu(),
+                        'sidebarEvents' => $this->commonController->sidebar(),
+                        'menus' => $this->commonController->header_menus()
+                    ]);
+    
+            } catch (\Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 500);
+            } 
+        }
+        
     }
 
     public function testfunction()
@@ -252,4 +293,5 @@ class EventController extends Controller
 
         return $marketIds;
     }
+   
 }
