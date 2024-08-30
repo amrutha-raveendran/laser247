@@ -1,42 +1,80 @@
 <?php 
+
 namespace App\Helpers;
 
 class RunnerHelper
 {
+    /**
+     * Process and organize runner data into pairs.
+     *
+     * @param  array $rows
+     * @return array
+     */
     public static function processRunnerData($rows)
     {
         $pairs = [];
-
-        if (isset($rows) && !empty($rows)) {
+    
+        // Check if $rows is not empty and is an array
+        if (is_array($rows) && !empty($rows)) {
+            // Get the first element from $rows
             $firstRow = reset($rows);
-            $rowData = explode('|', $firstRow);
-
-            $rowData = array_slice($rowData, 10);
-
-            $indicesToRemove = [12, 13, 26, 27];
-
-            foreach ($indicesToRemove as $index) {
-                if (isset($rowData[$index])) {
-                    unset($rowData[$index]);
-                }
+    
+            // Check if $firstRow is empty
+            if (empty($firstRow)) {
+            return [];
             }
-
-            $rowData = array_values($rowData);
-
-            for ($i = 0; $i < count($rowData); $i += 2) {
-                if (isset($rowData[$i + 1])) {
-                    $pairs[] = [$rowData[$i], $rowData[$i + 1]];
-                } else {
-                    $pairs[] = [$rowData[$i]];
+    
+            // Ensure that $firstRow is a string
+            if (is_string($firstRow)) {
+                $rowData = explode('|', $firstRow);
+    
+                // Remove empty values and trim whitespace
+                $rowData = array_filter(array_map('trim', $rowData));
+    
+                // Slice the array to include only relevant elements starting from index 10
+                $rowData = array_slice($rowData, 10);
+    
+                // Define indices to remove from the array
+                $indicesToRemove = [12, 13, 26, 27];
+    
+                // Remove elements at specified indices
+                foreach ($indicesToRemove as $index) {
+                    if (isset($rowData[$index])) {
+                        unset($rowData[$index]);
+                    }
                 }
+    
+                // Re-index the array after removing elements
+                $rowData = array_values($rowData);
+    
+                // Create pairs from the remaining elements
+                for ($i = 0; $i < count($rowData); $i += 2) {
+                    if (isset($rowData[$i + 1])) {
+                        $pairs[] = [$rowData[$i], $rowData[$i + 1]];
+                    } else {
+                        $pairs[] = [$rowData[$i]];
+                    }
+                }
+    
+                // Sort the pairs using a custom sorting function
+                $pairs = self::customSortPairs($pairs);
+            } else {
+                // Handle the case where $firstRow is not a string
+                throw new \UnexpectedValueException('Expected string, but received ' . gettype($firstRow));
             }
-
-            $pairs = self::customSortPairs($pairs);
+        } else {
+            return [];
         }
-
+    
         return $pairs;
     }
-
+    
+    /**
+     * Custom sorting of pairs into specific groups.
+     *
+     * @param  array $pairs
+     * @return array
+     */
     private static function customSortPairs($pairs)
     {
         $firstPart = array_slice($pairs, 0, 3);
@@ -59,6 +97,13 @@ class RunnerHelper
         return array_merge($firstPart, $secondPart, $thirdPart, $remainingPart);
     }
 
+    /**
+     * Filter and parse odds data based on a filter string.
+     *
+     * @param  array  $data
+     * @param  string $filterString
+     * @return array
+     */
     public static function filterAndParseOddsData(array $data, string $filterString): array
     {
         $filteredData = [];
@@ -100,9 +145,7 @@ class RunnerHelper
                 40 => $fields[40],
             ];
         }
-    //dd($parsedData);
+
         return $parsedData;
     }
-    
-    
 }

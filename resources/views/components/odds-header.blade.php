@@ -1,7 +1,9 @@
 <div class="row mx-0 head_bg">
     <div class="col-md-12 col-8 px-0">
         <p class="match-odds">
-            {{ $event_details['data']['event']['match_odds']['market_name'] }}
+            @if(isset($event_details['data']['event']['match_odds']['market_name']) && !empty($event_details['data']['event']['match_odds']['market_name']))
+                {{ $event_details['data']['event']['match_odds']['market_name'] }}
+            @endif
             <a href="javascript:void(0)"><i class="mdi mdi-information-outline"></i></a>
         </p>
     </div>
@@ -14,7 +16,11 @@
         <div class="minmax mm-fi">
             <dl class="fancy-info">
                 <dt>Min/Max</dt>
-                <dd>{{ number_format($market['min_bet'], 0) }}- {{ \App\Helpers\CustomHelper::format_number($market['max_bet']) }}</dd>
+                <dd>
+                    @if(isset($market['min_bet']) && isset($market['max_bet']))
+                        {{ number_format($market['min_bet'], 0) }}- {{ \App\Helpers\CustomHelper::format_number($market['max_bet']) }}
+                    @endif
+                </dd>
             </dl>
         </div>
     </div>

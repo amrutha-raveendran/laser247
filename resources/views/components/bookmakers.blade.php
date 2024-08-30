@@ -1,7 +1,7 @@
 <div class="dScreen book_makers">
     <div class="row mx-0 head_bg">
         <div class="col-md-12 col-8 px-0">
-            <p class="match-odds">{{ $bookmakers['title'] }}
+            <p class="match-odds">{{ $bookmakers['title']}}
                 <a href="javascript:void(0)">
                     <i class="mdi mdi-information-outline"></i>
                 </a>
@@ -16,9 +16,7 @@
             </a>
         </div>
     </div>
-    <div class="row mx-0 odds_header">
-        @include('components.odds-header', ['market' => $bookmakers])
-    </div>
+  
     @if(isset($bookmakers['book_maker_odds']))                          
         @foreach($bookmakers['book_maker_odds'] as $bkmakr)
             @php
@@ -28,7 +26,7 @@
             @if($teamOdds)
                 <div class="row mx-0 odds_body">          
                     <div class="col-md-5 col-7 px-0">
-                        <p class="team-name">{{ $bkmakr['name'] }}</p>
+                        <p class="team-name">{{ $bkmakr['name'] .'dsdsd'}}</p>
                     </div>
                     <div class="col-md-7 col-5 px-0">
                         <div class="btn-group dOddsBox">
