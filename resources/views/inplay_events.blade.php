@@ -1,4 +1,5 @@
-@extends('layouts.main-demo')
+@extends('layouts.main')
+
 @section('content')
 <!-- Content -->
 <div  class="content-page inPlay">
