@@ -16,128 +16,47 @@
     </ul>
 
     <div class="tab-content mt-3" id="eventTabsContent">
-        <!-- In-Play Tab -->
-        <div class="tab-pane fade show active" id="inplay" role="tabpanel" aria-labelledby="inplay-tab">
-            @if(isset($groupedEvents['In-Play']) && is_array($groupedEvents['In-Play']))
-                @foreach($groupedEvents['In-Play'] as $eventTypeName => $events)
-                    <h2>{{ $eventTypeName }}</h2>
-                    <ul class="list-unstyled">
-                        @foreach($events as $event)
-                            @php
-                                $marketId = $event['market_id'];
-                                $marketDataString = $rows['rows'][$marketId] ?? '';
-                                $values = [];
+        @foreach(['In-Play' => 'inplay', 'Today' => 'today', 'Tomorrow' => 'tomorrow'] as $key => $tabId)
+            <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="{{ $tabId }}" role="tabpanel" aria-labelledby="{{ $tabId }}-tab">
+                @if(isset($groupedEvents[$key]) && is_array($groupedEvents[$key]))
+                    @foreach($groupedEvents[$key] as $eventTypeName => $events)
+                        <h2>{{ $eventTypeName }}</h2>
+                        <ul class="list-unstyled">
+                            @foreach($events as $event)
+                                @php
+                                    $marketId = $event['market_id'];
+                                    $marketDataString = $rows['rows'][$marketId] ?? '';
+                                    $values = [];
 
-                                // Check if marketDataString is not empty before processing
-                                if (!empty($marketDataString)) {
-                                    $data = explode('|', $marketDataString);
-                                    $values = [
-                                        $data[12] ?? '',
-                                        $data[16] ?? '',
-                                        $data[25] ?? '',
-                                        $data[42] ?? ''
-                                    ];
-                                }
-                            @endphp
-                            <li class="{{ $marketId }}">
-                                <a href="{{ route('event.details', $event['event_id']) }}">
-                                    {{ $event['name'] }} ({{ $event['competition_name'] }}) - {{ \Carbon\Carbon::parse($event['open_date'])->format('d M Y H:i') }}
-                                </a>
-                                <span>
-                                    @foreach($values as $value)
-                                        {{ $value }} 
-                                    @endforeach
-                                </span>
-                            </li>
-                        @endforeach
-                    </ul>
-                @endforeach
-            @else
-                <p>No In-Play events available.</p>
-            @endif
-        </div>
-
-        <!-- Today Tab -->
-        <div class="tab-pane fade" id="today" role="tabpanel" aria-labelledby="today-tab">
-            @if(isset($groupedEvents['Today']) && is_array($groupedEvents['Today']))
-                @foreach($groupedEvents['Today'] as $eventTypeName => $events)
-                    <h2>{{ $eventTypeName }}</h2>
-                    <ul class="list-unstyled">
-                        @foreach($events as $event)
-                            @php
-                                $marketId = $event['market_id'];
-                                $marketDataString = $rows['rows'][$marketId] ?? '';
-                                $values = [];
-
-                                // Check if marketDataString is not empty before processing
-                                if (!empty($marketDataString)) {
-                                    $data = explode('|', $marketDataString);
-                                    $values = [
-                                        $data[12] ?? '',
-                                        $data[16] ?? '',
-                                        $data[25] ?? '',
-                                        $data[42] ?? ''
-                                    ];
-                                }
-                            @endphp
-                            <li class="{{ $marketId }}">
-                                <a href="{{ route('event.details', $event['event_id']) }}">
-                                    {{ $event['name'] }} ({{ $event['competition_name'] }}) - {{ \Carbon\Carbon::parse($event['open_date'])->format('d M Y H:i') }}
-                                </a>
-                                <span>
-                                    @foreach($values as $value)
-                                        {{ $value }} 
-                                    @endforeach
-                                </span>
-                            </li>
-                        @endforeach
-                    </ul>
-                @endforeach
-            @else
-                <p>No Today events available.</p>
-            @endif
-        </div>
-
-        <!-- Tomorrow Tab -->
-        <div class="tab-pane fade" id="tomorrow" role="tabpanel" aria-labelledby="tomorrow-tab">
-            @if(isset($groupedEvents['Tomorrow']) && is_array($groupedEvents['Tomorrow']))
-                @foreach($groupedEvents['Tomorrow'] as $eventTypeName => $events)
-                    <h2>{{ $eventTypeName }}</h2>
-                    <ul class="list-unstyled">
-                        @foreach($events as $event)
-                            @php
-                                $marketId = $event['market_id'];
-                                $marketDataString = $rows['rows'][$marketId] ?? '';
-                                $values = [];
-
-                                // Check if marketDataString is not empty before processing
-                                if (!empty($marketDataString)) {
-                                    $data = explode('|', $marketDataString);
-                                    $values = [
-                                        $data[12] ?? '',
-                                        $data[16] ?? '',
-                                        $data[25] ?? '',
-                                        $data[42] ?? ''
-                                    ];
-                                }
-                            @endphp
-                            <li class="{{ $marketId }}">
-                                <a href="{{ route('event.details', $event['event_id']) }}">
-                                    {{ $event['name'] }} ({{ $event['competition_name'] }}) - {{ \Carbon\Carbon::parse($event['open_date'])->format('d M Y H:i') }}
-                                </a>
-                                <span>
-                                    @foreach($values as $value)
-                                        {{ $value }} 
-                                    @endforeach
-                                </span>
-                            </li>
-                        @endforeach
-                    </ul>
-                @endforeach
-            @else
-                <p>No Tomorrow events available.</p>
-            @endif
-        </div>
+                                    // Check if marketDataString is not empty before processing
+                                    if (!empty($marketDataString)) {
+                                        $data = explode('|', $marketDataString);
+                                        $values = [
+                                            $data[12] ?? '',
+                                            $data[16] ?? '',
+                                            $data[25] ?? '',
+                                            $data[42] ?? ''
+                                        ];
+                                    }
+                                @endphp
+                                <li class="{{ $marketId }}">
+                                    <a href="{{ route('event.details', $event['event_id']) }}">
+                                        {{ $event['name'] }} ({{ $event['competition_name'] }}) - {{ \Carbon\Carbon::parse($event['open_date'])->format('d M Y H:i') }}
+                                    </a>
+                                    <span>
+                                        @foreach($values as $value)
+                                            {{ $value }} 
+                                        @endforeach
+                                    </span>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endforeach
+                @else
+                    <p>No {{ $key }} events available.</p>
+                @endif
+            </div>
+        @endforeach
     </div>
 </div>
 @endsection
@@ -149,5 +68,5 @@
 <!-- Bootstrap Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 
-<script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
+
 @endsection
