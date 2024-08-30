@@ -106,6 +106,7 @@ class RunnerHelper
      */
     public static function filterAndParseOddsData(array $data, string $filterString): array
     {
+        
         $filteredData = [];
     
         // Filter rows by the given filter string
@@ -120,32 +121,40 @@ class RunnerHelper
             if (in_array($filterString, $fields)) {
                 $filteredData[] = $fields;
             }
-        }
-    
+        }     
         $parsedData = [];
-    
-        // Parse the filtered data into the desired format
-        foreach ($filteredData as $fields) {
-            // Add the first team (indices 19-27)
-            $parsedData[19] = [
-                'team' => $fields[19],  // Team name at index 19
-                
-                24 => $fields[24],
-                25 => $fields[25],
-                26 => $fields[26],
-                27 => $fields[27],
-            ];
-    
-            // Add the second team (indices 32-40)
-            $parsedData[32] = [
-                'team' => $fields[32],  // Team name at index 32
-                37 => $fields[37],
-                38 => $fields[38],
-                39 => $fields[39],
-                40 => $fields[40],
-            ];
-        }
+    // Initialize the parsed data array
+    $parsedData = [];
 
-        return $parsedData;
+    // Iterate through each item in filtered data
+    foreach ($filteredData as $item) {
+        // Loop through the array, checking specific indices
+        $currentIndex = 0; 
+
+        while ($currentIndex < count($item)) {
+            // Check if index 19 exists and contains a string (assumed as team name)
+            if (isset($item[$currentIndex + 19]) && is_string($item[$currentIndex + 19])) {
+                $teamName = $item[$currentIndex + 19];
+
+                // Add the team name and next four values to parsedData
+                $parsedData[$teamName] = [
+                    'team' => $teamName,
+                    'odds1' => $item[$currentIndex + 24] ?? null, // First odds value
+                    'value1' => $item[$currentIndex + 25] ?? null, // Corresponding value
+                    'odds2' => $item[$currentIndex + 26] ?? null, // Second odds value
+                    'value2' => $item[$currentIndex + 27] ?? null, // Corresponding value
+                ];
+            }
+
+            // Move to the next set of indices (assuming a pattern of increment)
+            // To find the next team string, increment to the next starting index 
+            $nextTeamIndex = $currentIndex + 13; 
+            $currentIndex = $nextTeamIndex;
+        }
+    }
+
+return $parsedData;
+       
+   
     }
 }

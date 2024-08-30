@@ -26,15 +26,15 @@
             @if($teamOdds)
                 <div class="row mx-0 odds_body">          
                     <div class="col-md-5 col-7 px-0">
-                        <p class="team-name">{{ $bkmakr['name'] .'dsdsd'}}</p>
+                        <p class="team-name">{{ $bkmakr['name']}}</p>
                     </div>
                     <div class="col-md-7 col-5 px-0">
                         <div class="btn-group dOddsBox">
                             <!-- Ensure that indices match expected values -->
-                            <button class="back back2">{{ $teamOdds[0] ?? '-' }} <span>{{ $teamOdds[1] ?? '-' }}</span></button>
+                            <button class="back back2">{{ $teamOdds[2] ?? '-' }} <span>{{ $teamOdds[1] ?? '-' }}</span></button>
                             <button class="back back1">{{ $teamOdds[2] ?? '-' }} <span>{{ $teamOdds[3] ?? '-' }}</span></button>
-                            <button class="back">{{ $teamOdds[24] ?? '-' }} <span>{{ $teamOdds[25] ?? '-' }}</span></button>
-                            <button class="lay">{{ $teamOdds[26] ?? '-' }} <span>{{ $teamOdds[27] ?? '-' }}</span></button>
+                            <button class="back">{{ $teamOdds['odds1'] ?? '-' }} <span>{{ $teamOdds['value1'] ?? '-' }}</span></button>
+                            <button class="lay">{{ $teamOdds['odds2'] ?? '-' }} <span>{{ $teamOdds['value2'] ?? '-' }}</span></button>
                             <button class="lay lay1">{{ $teamOdds[39] ?? '-' }} <span>{{ $teamOdds[40] ?? '-' }}</span></button>
                             <button class="lay lay2">{{ $teamOdds[37] ?? '-' }} <span>{{ $teamOdds[38] ?? '-' }}</span></button>
                         </div>
