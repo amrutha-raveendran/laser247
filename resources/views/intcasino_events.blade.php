@@ -97,8 +97,23 @@
                                                                 
                                                             </ul>
                                                             <div class="tab-content">
-                                                                <tab class="tab-pane active" role="tabpanel" aria-labelledby>
-
+                                                                <tab class="tab-pane active" role="tabpanel" aria-labelledby class="tab-pane fade show active" id="outer-tab-pane-1" role="tabpanel" aria-labelledby="outer-tab-1">
+                                                                    <div class="icasino_ul_tabs">
+                                                                        <tabset class="tab-container">
+                                                                            <ul class="nav nav-tabs" id="innerTab1" role="tablist">
+                                                                                @if(isset($intcasino_events['data']['tables']))
+                                                                                    @foreach($intcasino_events['data']['tables'] as  $subevents)
+                                                                                            @foreach($subevents as  $subkey => $sub_event)
+                                                                                            {{ dd($subkey)}}
+                                                                                                <li class="nav-item" role="presentation">
+                                                                                                    <a class="nav-link active" id="inner-tab-1-1" data-bs-toggle="tab" data-bs-target="#inner-tab-pane-1-1" type="button" role="tab" aria-controls="inner-tab-pane-1-1" aria-selected="false">{{$subkey}}</a>
+                                                                                                </li>
+                                                                                            @endforeach
+                                                                                    @endforeach
+                                                                                @endif
+                                                                            </ul>
+                                                                        </tabset>
+                                                                    </div>
                                                                 </tab>
                                                             </div>
                                                         </tabset>
