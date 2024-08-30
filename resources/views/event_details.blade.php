@@ -26,11 +26,10 @@
                                     @include('components.odds-header', ['market' => $event_details['data']['event']['match_odds']])
                                     @php
                                         $pairs = \App\Helpers\RunnerHelper::processRunnerData($rows);
-                                        $pairIndex = 0;
-                                    @endphp
-                                    @foreach($event_details['data']['event']['match_odds']['runners'] as $runner)
-                                        @include('components.runner-odds', ['runner' => $runner, 'pairs' => $pairs, 'pairIndex' => $pairIndex])
-                                    @endforeach
+                                        
+                                    @endphp                                   
+                                        @include('components.runner-odds', ['runners' => $event_details['data']['event']['match_odds']['runners'], 'pairs' => $pairs])
+                                   
                                 @endisset
                             </div>
                                 <!-- MatchOdds -->

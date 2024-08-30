@@ -56,6 +56,7 @@ class EventController extends Controller
     public function getEventDetails($eventId)
     {
         $eventDetails = $this->fetchEventDetails($eventId);
+        
         $marketIds = $this->extractMarketIds($eventDetails['data']['event'] ?? []);
         $marketData = $this->fetchMarketData($marketIds);
         $scoreData = $this->fetchScoreData($eventId);
@@ -196,15 +197,14 @@ class EventController extends Controller
             ])->then(
                 function ($response) {                   
                     $marketDataString = trim($response->getBody()->getContents());
-                    Log::debug('Market data response:', ['response' => $marketDataString]);                    
-                    
-                    // Assuming the API response is in JSON format, decode it
-                    return json_decode($marketDataString, true);  // Decode the JSON response to an array
+                    Log::debug('Market data response:', ['response' => $marketDataString]);             
+                                      
+                    return json_decode($marketDataString, true);  
                 }
             )->otherwise(
-                function (\Exception $e) {  // Catch all exceptions
+                function (\Exception $e) {  
                     Log::error('Error fetching market data: ' . $e->getMessage());
-                    return ['Error' => []];  // Return the error in a structured way
+                    return ['Error' => []];  
                 }
             );
     
@@ -219,8 +219,7 @@ class EventController extends Controller
             }
         }
     
-        Log::debug('Fetched market data:', ['results' => $results]);
-        // Do not use dd in production, only for debugging purposes. Consider returning or processing the results further.
+        Log::debug('Fetched market data:', ['results' => $results]);       
         return ['rows' => $results];
     }
   
@@ -356,8 +355,8 @@ class EventController extends Controller
      */
     public function fetchInPlayEvents()
     {
-        // Fetch in-play events data from the API or other source
-        $response = Http::get('API_URL'); // Replace 'API_URL' with your actual API endpoint
+        // Fetch in-play events data from the API
+        $response = Http::get('API_URL'); 
 
         $data = $response->json();
 
