@@ -158,7 +158,7 @@
                         @foreach($menus['evnt_list']['data']['menu'] as $menuItem)
                             @if(isset($menuItem['name']) )
                                 <li class="nav-item">
-                                <a class="nav-link {{($menuItem['id'] =='99995'||$menuItem['id']=='99999')?'hightlight-menus':(($menuItem['id']=='99991')?'rc-menu':'')}}" href="" >
+                                <a href="{{ route('events.sports', ['sportId' => $menuItem['id']]) }}" class="nav-link {{($menuItem['id'] =='99995'||$menuItem['id']=='99999')?'hightlight-menus':(($menuItem['id']=='99991')?'rc-menu':'')}}" href="" >
                                     {{ $menuItem['name'] }}<sup class="sup-animated">{{($menuItem['id']=='99991' || $menuItem['id']=='99990')?'NEW':''}}</sup>
                                 </a>
                                 </li>
