@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Helpers;
 
@@ -13,7 +13,9 @@ class RunnerHelper
      */
     public static function processRunnerData(array $rows): array
     {
-        // First, filter the data based on the filter string 'OPEN'
+
+        if(!empty($rows)){
+             // First, filter the data based on the filter string 'OPEN'
         $filteredData = self::filterOddsData($rows, 'OPEN');
 
         // If filtered data is empty, return an empty array
@@ -22,7 +24,7 @@ class RunnerHelper
         }
 
         // Only process the first row of filtered data
-        $rowData = $filteredData[0]; 
+        $rowData = $filteredData[0];
 
         // Slice the array to include only relevant elements starting from index 10
         $rowData = array_slice($rowData, 10);
@@ -54,6 +56,8 @@ class RunnerHelper
         $pairs = self::customSortPairs($pairs);
 
         return $pairs;
+        }
+
     }
 
     /**
@@ -98,23 +102,31 @@ class RunnerHelper
      */
     public static function filterOddsData(array $data, string $filterString): array
     {
-        $filteredData = [];
+        // Check if $data is not empty
+        if (is_array($data) && !empty($data)) {
+            $filteredData = [];
 
-        // Filter rows by the given filter string
-        foreach ($data as $row) {
-            // Remove surrounding quotes and trim the row
-            $row = trim($row, '"');
+            // Filter rows by the given filter string
+            foreach ($data as $row) {
+                // Check if $row is a string
+                if (is_string($row)) {
+                    // Remove surrounding quotes and trim the row
+                    $row = trim($row, '"');
 
-            // Split the row into an array based on the pipe delimiter
-            $fields = explode('|', $row);
+                    // Split the row into an array based on the pipe delimiter
+                    $fields = explode('|', $row);
 
-            // Check if the filter string is present in any element of the array
-            if (in_array($filterString, $fields)) {
-                $filteredData[] = $fields;
+                    // Check if the filter string is present in any element of the array
+                    if (in_array($filterString, $fields, true)) {
+                        $filteredData[] = $fields;
+                    }
+                }
             }
+
+            return $filteredData;
         }
 
-        return $filteredData;
+        return [];
     }
 
     /**

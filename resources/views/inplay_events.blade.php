@@ -19,31 +19,31 @@
                                 </li>
                             </ol>
                             <div  role="listbox" class="carousel-inner">
-                                <div  class="carousel-item active"><img 
+                                <div  class="carousel-item active"><img
                                         src="assets/img/bnr1.webp" class="img-fluid d-none d-sm-block"><img
                                          src="assets/img/m_bnr1.webp"
                                         class="img-fluid d-block d-sm-none"></div>
-                                <div  class="carousel-item"><img 
+                                <div  class="carousel-item"><img
                                         src="assets/img/bnr2.webp" class="img-fluid d-none d-sm-block"><img
                                          src="assets/img/m_bnr2.webp"
                                         class="img-fluid d-block d-sm-none"></div>
-                                <div  class="carousel-item"><img 
+                                <div  class="carousel-item"><img
                                         src="assets/img/bnr3.webp" class="img-fluid d-none d-sm-block"><img
                                          src="assets/img/m_bnr3.webp"
                                         class="img-fluid d-block d-sm-none"></div>
                             </div>
                         </div>
                         <ul  id="pills-tab" role="tablist" class="nav nav-pills es-tabs-ui">
-                            <li  role="presentation" class="nav-item"><button 
+                            <li  role="presentation" class="nav-item"><button
                                     id="pills-exchange-tab" data-bs-toggle="pill" data-bs-target="#pills-exchange"
                                     type="button" role="tab" aria-controls="pills-exchange" aria-selected="true"
                                     class="nav-link active" fdprocessedid="o1c12c">exchange</button></li>
-                            <li  role="presentation" class="nav-item"><button 
+                            <li  role="presentation" class="nav-item"><button
                                     id="pills-sportsbook-tab" data-bs-toggle="pill" data-bs-target="#pills-sportsbook"
                                     type="button" role="tab" aria-controls="pills-sportsbook" aria-selected="false"
                                     class="nav-link" fdprocessedid="bbz86">sportsbook</button></li>
                         </ul>
-                        
+
                         <div  id="pills-tabContent" class="tab-content pt-0">
                             <div  id="pills-exchange" role="tabpanel"
                                 aria-labelledby="pills-exchange-tab" class="tab-pane fade show active"></div>
@@ -67,9 +67,9 @@
                                     <a  class="mobile-search-btn">
                                         <img  src="assets/img/icon-searching.svg" class="img-fluid">
                                     </a>
-                                    
+
                                     <tab role="tabpanel" aria-labelledby="tab0-link" id="inplay" class="tab-pane active">
-                                        
+
                                         @foreach($groupedEvents['In-Play'] as $eventTypeName => $events)
                                             <div>
                                                 <div class="mb-1">
@@ -118,13 +118,13 @@
                                             $data[42] ?? '-'
                                         ];
                                     }
-                                  
+
                                                         @endphp
                                                         <div  class="row align-items-center row-my">
                                                             <div  class="col-md-5 px-1 col-10">
                                                                 <p  class="matchname">
                                                                     <a  class="item-inplay" href="{{ route('event.details', $event['event_id']) }}">
-                                                                        <img  src="assets/img/icon-in_play.png" class="img-fluid"> {{ $event['name'] }} ({{ $event['competition_name'] }}) 
+                                                                        <img  src="assets/img/icon-in_play.png" class="img-fluid"> {{ $event['name'] }} ({{ $event['competition_name'] }})
                                                                     </a>
                                                                     <b>
                                                                         <span  class="in_play">In-Play</span>
@@ -187,9 +187,9 @@
                                                         <div  class="col-md-1"></div>
                                                     </div>
                                                     @foreach($events as $event)
-                                                   
+
                                                         @php
-                            
+
                                                         $marketId = $event['market_id'];
                                     $marketDataString = $rows['rows'][$marketId] ?? '';
                                     $values = [];
@@ -197,6 +197,7 @@
                                     // Check if marketDataString is not empty before processing
                                     if (!empty($marketDataString)) {
                                         $data = explode('|', $marketDataString);
+
                                         $values = [
                                             $data[12] ?? '',
                                             $data[16] ?? '',
@@ -209,7 +210,7 @@
                                                             <div  class="col-md-5 px-1 col-10">
                                                                 <p  class="matchname">
                                                                     <a  class="item-inplay" href="{{ route('event.details', $event['event_id']) }}">
-                                                                        <img  src="assets/img/icon-in_play.png" class="img-fluid"> {{ $event['name'] }} ({{ $event['competition_name'] }}) 
+                                                                        <img  src="assets/img/icon-in_play.png" class="img-fluid"> {{ $event['name'] }} ({{ $event['competition_name'] }})
                                                                     </a>
                                                                     <b>
                                                                     {{ ($event['in_play']==1)?'<span  class="in_play">in_play In-Play</span>':'' }}
@@ -221,13 +222,13 @@
                                                             <div  class="col-md-6 col px-0">
                                                                 <div  class="oddsEventlist">
                                                                     <div  class="btn-group">
-                                                                        <button  class="back" fdprocessedid="e9sqyd">- </button><button  class="lay" fdprocessedid="6blhb">-</button>
+                                                                        <button  class="back" fdprocessedid="e9sqyd">{{ $values[0] ?? '-' }}</button><button  class="lay" fdprocessedid="6blhb">{{ $values[1] ?? '-' }}</button>
                                                                     </div>
                                                                     <div  class="btn-group">
                                                                         <button  class="back" fdprocessedid="zq3z6">-</button><button  class="lay" fdprocessedid="a1e6gm">-</button>
                                                                     </div>
                                                                     <div  class="btn-group">
-                                                                        <button  class="back">-</button><button  class="lay" fdprocessedid="7azlm">-</button>
+                                                                        <button  class="back">{{ $values[3] ?? '-' }}</button><button  class="lay" fdprocessedid="7azlm">{{ $values[4] ?? '-' }}</button>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -292,7 +293,7 @@
                                                             <div  class="col-md-5 px-1 col-10">
                                                                 <p  class="matchname">
                                                                     <a  class="item-inplay" href="{{ route('event.details', $event['event_id']) }}">
-                                                                        <img  src="assets/img/icon-in_play.png" class="img-fluid"> {{ $event['name'] }} ({{ $event['competition_name'] }}) 
+                                                                        <img  src="assets/img/icon-in_play.png" class="img-fluid"> {{ $event['name'] }} ({{ $event['competition_name'] }})
                                                                     </a>
                                                                     <b>
                                                                         <span  class="in_play">In-Play</span>
@@ -304,13 +305,13 @@
                                                             <div  class="col-md-6 col px-0">
                                                                 <div  class="oddsEventlist">
                                                                     <div  class="btn-group">
-                                                                        <button  class="back" fdprocessedid="e9sqyd">- </button><button  class="lay" fdprocessedid="6blhb">-</button>
+                                                                        <button  class="back" fdprocessedid="e9sqyd">{{ $values[0] ?? '-' }} </button><button  class="lay" fdprocessedid="6blhb">{{ $values[1] ?? '-' }}</button>
                                                                     </div>
                                                                     <div  class="btn-group">
                                                                         <button  class="back" fdprocessedid="zq3z6">-</button><button  class="lay" fdprocessedid="a1e6gm">-</button>
                                                                     </div>
                                                                     <div  class="btn-group">
-                                                                        <button  class="back">-</button><button  class="lay" fdprocessedid="7azlm">-</button>
+                                                                        <button  class="back">{{ $values[3] ?? '-' }}</button><button  class="lay" fdprocessedid="7azlm">{{ $values[4] ?? '-' }}</button>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -331,7 +332,7 @@
                         </div>
                     </div>
                 </div>
-           
+
     </div>
 </div>
 @endsection
