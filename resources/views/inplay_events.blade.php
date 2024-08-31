@@ -104,19 +104,20 @@
                                                     </div>
                                                     @foreach($events as $event)
                                                         @php
-                                                            $marketId = $event['market_id'];
-                                                            $marketDataString = isset($rows['rows'][$marketId]) ? $rows['rows'][$marketId] : '';
-                                                            $marketDataArray = json_decode($marketDataString, true);
+                                                        $marketId = $event['market_id'];
+                                    $marketDataString = $rows['rows'][$marketId] ?? '';
+                                    $values = [];
 
-                                                            // Extract the values using positions
-                                                            $values = [];
-                                                            if (is_array($marketDataArray) && isset($marketDataArray[0])) {
-                                                                $data = explode('|', $marketDataArray[0]);
-                                                                if (isset($data[12])) $values[] = $data[12];
-                                                                if (isset($data[16])) $values[] = $data[16];
-                                                                if (isset($data[25])) $values[] = $data[25];
-                                                                if (isset($data[42])) $values[] = $data[42];
-                                                            }
+                                    // Check if marketDataString is not empty before processing
+                                    if (!empty($marketDataString)) {
+                                        $data = explode('|', $marketDataString);
+                                        $values = [
+                                            $data[12] ?? '',
+                                            $data[16] ?? '',
+                                            $data[25] ?? '',
+                                            $data[42] ?? ''
+                                        ];
+                                    }
                                                         @endphp
                                                         <div  class="row align-items-center row-my">
                                                             <div  class="col-md-5 px-1 col-10">
@@ -188,19 +189,20 @@
                                                    
                                                         @php
                             
-                                                            $marketId = $event['market_id'];
-                                                            $marketDataString = isset($rows['rows'][$marketId]) ? $rows['rows'][$marketId] : '';
-                                                            $marketDataArray = json_decode($marketDataString, true);
+                                                        $marketId = $event['market_id'];
+                                    $marketDataString = $rows['rows'][$marketId] ?? '';
+                                    $values = [];
 
-                                                            // Extract the values using positions
-                                                            $values = [];
-                                                            if (is_array($marketDataArray) && isset($marketDataArray[0])) {
-                                                                $data = explode('|', $marketDataArray[0]);
-                                                                if (isset($data[12])) $values[] = $data[12];
-                                                                if (isset($data[16])) $values[] = $data[16];
-                                                                if (isset($data[25])) $values[] = $data[25];
-                                                                if (isset($data[42])) $values[] = $data[42];
-                                                            }
+                                    // Check if marketDataString is not empty before processing
+                                    if (!empty($marketDataString)) {
+                                        $data = explode('|', $marketDataString);
+                                        $values = [
+                                            $data[12] ?? '',
+                                            $data[16] ?? '',
+                                            $data[25] ?? '',
+                                            $data[42] ?? ''
+                                        ];
+                                    }
                                                         @endphp
                                                         <div  class="row align-items-center row-my">
                                                             <div  class="col-md-5 px-1 col-10">
@@ -270,19 +272,20 @@
                                                     </div>
                                                     @foreach($events as $event)
                                                         @php
-                                                            $marketId = $event['market_id'];
-                                                            $marketDataString = isset($rows['rows'][$marketId]) ? $rows['rows'][$marketId] : '';
-                                                            $marketDataArray = json_decode($marketDataString, true);
+                                                        $marketId = $event['market_id'];
+                                    $marketDataString = $rows['rows'][$marketId] ?? '';
+                                    $values = [];
 
-                                                            // Extract the values using positions
-                                                            $values = [];
-                                                            if (is_array($marketDataArray) && isset($marketDataArray[0])) {
-                                                                $data = explode('|', $marketDataArray[0]);
-                                                                if (isset($data[12])) $values[] = $data[12];
-                                                                if (isset($data[16])) $values[] = $data[16];
-                                                                if (isset($data[25])) $values[] = $data[25];
-                                                                if (isset($data[42])) $values[] = $data[42];
-                                                            }
+                                    // Check if marketDataString is not empty before processing
+                                    if (!empty($marketDataString)) {
+                                        $data = explode('|', $marketDataString);
+                                        $values = [
+                                            $data[12] ?? '',
+                                            $data[16] ?? '',
+                                            $data[25] ?? '',
+                                            $data[42] ?? ''
+                                        ];
+                                    }
                                                         @endphp
                                                         <div  class="row align-items-center row-my">
                                                             <div  class="col-md-5 px-1 col-10">
