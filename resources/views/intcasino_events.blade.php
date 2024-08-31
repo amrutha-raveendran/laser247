@@ -1,3 +1,4 @@
+
 @extends('layouts.main-demo')
 @section('content')
     <!-- Sidebar -->
@@ -97,21 +98,35 @@
                                                                 
                                                             </ul>
                                                             <div class="tab-content">
-                                                                <tab class="tab-pane active" role="tabpanel" aria-labelledby class="tab-pane fade show active" id="outer-tab-pane-1" role="tabpanel" aria-labelledby="outer-tab-1">
+                                                                <tab class="tab-pane " role="tabpanel" aria-labelledby class="tab-pane fade show " id="outer-tab-pane-1" role="tabpanel" aria-labelledby="outer-tab-1">
                                                                     <div class="icasino_ul_tabs">
                                                                         <tabset class="tab-container">
                                                                             <ul class="nav nav-tabs" id="innerTab1" role="tablist">
                                                                                 @if(isset($intcasino_events['data']['tables']))
                                                                                     @foreach($intcasino_events['data']['tables'] as  $subevents)
                                                                                             @foreach($subevents as  $subkey => $sub_event)
-                                                                                            {{ dd($subkey)}}
+                                                                                                @foreach($sub_event as  $skey => $sevent)
+                                                                                            
                                                                                                 <li class="nav-item" role="presentation">
-                                                                                                    <a class="nav-link active" id="inner-tab-1-1" data-bs-toggle="tab" data-bs-target="#inner-tab-pane-1-1" type="button" role="tab" aria-controls="inner-tab-pane-1-1" aria-selected="false">{{$subkey}}</a>
+                                                                                                    <a class="nav-link " id="inner-tab-1-1" data-bs-toggle="tab" data-bs-target="#inner-tab-pane-1-1" type="button" role="tab" aria-controls="inner-tab-pane-1-1" aria-selected="false">{{$skey}}</a>
                                                                                                 </li>
+                                                                                                @endforeach
                                                                                             @endforeach
                                                                                     @endforeach
                                                                                 @endif
                                                                             </ul>
+                                                                            <div class="tab-content">
+                                                                                <tab class="tab-pane active" role="tabpanel" aria-labelledby class="tab-pane fade show active" id="inner-tab-pane-1-1" role="tabpanel" aria-labelledby="inner-tab-pane-1-1">
+                                                                                    <div class="row py-2 mx-0 justify-content-center">
+                                                                                        <div class="col-md-2 col-4 align-self-center text-center">
+                                                                                            <div class="casino position-relative">
+                                                                                                <img _ngcontent-rue-c87="" class="img-fluid" src="https://tezcdn.com/thumbs/vivo_245.png">
+                                                                                                <a _ngcontent-rue-c87="" href="javascript:void(0);" class="btn casino-btn">Play Now</a>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </tab>
+                                                                            </div>
                                                                         </tabset>
                                                                     </div>
                                                                 </tab>
@@ -164,6 +179,7 @@
                                                 </div>
                                            </div>
                                         </div>
+                                        
                                         
                                     </div>
                                 </div>
