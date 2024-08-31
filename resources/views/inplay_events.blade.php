@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.main-demo')
 
 @section('content')
 <!-- Content -->
@@ -112,12 +112,13 @@
                                     if (!empty($marketDataString)) {
                                         $data = explode('|', $marketDataString);
                                         $values = [
-                                            $data[12] ?? '',
-                                            $data[16] ?? '',
-                                            $data[25] ?? '',
-                                            $data[42] ?? ''
+                                            $data[12] ?? '-',
+                                            $data[16] ?? '-',
+                                            $data[25] ?? '-',
+                                            $data[42] ?? '-'
                                         ];
                                     }
+                                  
                                                         @endphp
                                                         <div  class="row align-items-center row-my">
                                                             <div  class="col-md-5 px-1 col-10">
@@ -135,13 +136,13 @@
                                                             <div  class="col-md-6 col px-0">
                                                                 <div  class="oddsEventlist">
                                                                     <div  class="btn-group">
-                                                                        <button  class="back" fdprocessedid="e9sqyd">- </button><button  class="lay" fdprocessedid="6blhb">-</button>
+                                                                        <button  class="back" fdprocessedid="e9sqyd"> {{ $values[0] ?? '-' }}  </button><button  class="lay" fdprocessedid="6blhb"> {{ $values[1] ?? '-' }} </button>
                                                                     </div>
                                                                     <div  class="btn-group">
                                                                         <button  class="back" fdprocessedid="zq3z6">-</button><button  class="lay" fdprocessedid="a1e6gm">-</button>
                                                                     </div>
                                                                     <div  class="btn-group">
-                                                                        <button  class="back">-</button><button  class="lay" fdprocessedid="7azlm">-</button>
+                                                                        <button  class="back">{{ $values[3] ?? '-' }} </button><button  class="lay" fdprocessedid="7azlm">{{ $values[4] ?? '-' }} </button>
                                                                     </div>
                                                                 </div>
                                                             </div>
