@@ -139,7 +139,9 @@ class RunnerHelper
     {
         // Initialize the parsed data array
         $parsedData = [];
-
+        $filteredData = array_filter($filteredData, function ($item) {
+            return isset($item[14]) && $item[14] === "BOOKMAKER";
+        });
         // Iterate through each item in filtered data
         foreach ($filteredData as $item) {
             // Loop through the array, checking specific indices

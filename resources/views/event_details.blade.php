@@ -42,7 +42,7 @@
 
                                     @foreach($event_details['data']['event']['book_makers'] as $bookmakers)
                                         @php
-                                            $parsedData = \App\Helpers\RunnerHelper::filterAndParseOddsData($rows, 'BOOK_MAKER')
+                                            $parsedData = \App\Helpers\RunnerHelper::filterAndParseOddsData($rows, 'BOOK_MAKER');
                                         @endphp
                                         @include('components.bookmakers', ['bookmakers' => $bookmakers, 'parsedData' => $parsedData])
                                     @endforeach
