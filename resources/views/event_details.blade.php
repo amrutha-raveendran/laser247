@@ -51,7 +51,9 @@
 
                                 <!-- Bookmakers -->
                                 <!-- Tied -->
+                                @if(!empty($event_details['data']['event']['tied']))
                                 @include('components.tied')
+                                @endif
                                 <!-- Tied -->
                                 <!-- Fancy -->
 

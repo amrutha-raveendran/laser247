@@ -59,16 +59,16 @@ class EventController extends Controller
                         'sidebarEvents' => $this->commonController->sidebar(),
                         'menus' => $this->commonController->header_menus()
                     ]);
-    
+
             } catch (\Exception $e) {
                 return response()->json(['error' => $e->getMessage()], 500);
-            } 
+            }
         }
         else if($sportId=='99995')
         {
             try {
                 $response = Http::get('https://api.datalaser247.com/api/guest/casino_int');
-                
+
                 $intcasino_events = json_decode($response->getBody(), true);
                 if(is_array($intcasino_events))
                     return view('intcasino_events', [
@@ -77,15 +77,15 @@ class EventController extends Controller
                         'sidebarEvents' => $this->commonController->sidebar(),
                         'menus' => $this->commonController->header_menus()
                     ]);
-    
+
             } catch (\Exception $e) {
                 return response()->json(['error' => $e->getMessage()], 500);
-            } 
+            }
         }
-        
+
     }
 
-   
+
 
     /**
      * Fetch event details by event ID.
@@ -96,7 +96,7 @@ class EventController extends Controller
     public function getEventDetails($eventId)
     {
         $eventDetails = $this->fetchEventDetails($eventId);
-        
+
         $marketIds = $this->extractMarketIds($eventDetails['data']['event'] ?? []);
         $marketData = $this->fetchMarketData($marketIds);
         $scoreData = $this->fetchScoreData($eventId);
@@ -225,31 +225,31 @@ class EventController extends Controller
      */
     private function fetchMarketData(array $marketIds)
     {
-        $batchSize = 50; 
+        $batchSize = 50;
         $batches = array_chunk($marketIds, $batchSize);
         $results = [];
-        
+
         foreach ($batches as $batch) {
             $promise = $this->httpClient->postAsync('https://odds.laser247.online/ws/getMarketDataNew', [
                 'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
                 'form_params' => ['market_ids' => $batch],
                 'timeout' => 10,
             ])->then(
-                function ($response) {                   
+                function ($response) {
                     $marketDataString = trim($response->getBody()->getContents());
-                    Log::debug('Market data response:', ['response' => $marketDataString]);             
-                                      
-                    return json_decode($marketDataString, true);  
+                    Log::debug('Market data response:', ['response' => $marketDataString]);
+
+                    return json_decode($marketDataString, true);
                 }
             )->otherwise(
-                function (\Exception $e) {  
+                function (\Exception $e) {
                     Log::error('Error fetching market data: ' . $e->getMessage());
-                    return ['Error' => []];  
+                    return ['Error' => []];
                 }
             );
-    
+
             $batchResult = $promise->wait();
-    
+
             foreach ($batch as $index => $marketId) {
                 if (isset($batchResult[$index])) {
                     $results[$marketId] = $batchResult[$index];
@@ -258,11 +258,11 @@ class EventController extends Controller
                 }
             }
         }
-    
-        Log::debug('Fetched market data:', ['results' => $results]);       
+
+        Log::debug('Fetched market data:', ['results' => $results]);
         return ['rows' => $results];
     }
-  
+
     /**
      * Fetch score data using cURL.
      *
@@ -283,15 +283,11 @@ class EventController extends Controller
         curl_close($ch);
 
         if ($status == 200) {
-            $decodedResponse = json_decode($response, true);
-            if (isset($decodedResponse['content'])) {
                 return [
                     'status' => $status,
-                    'content' => $decodedResponse['content'],
+                    'content' => $response,
                 ];
-            }
         }
-
         return [
             'status' => $status,
             'content' => '',
@@ -396,7 +392,7 @@ class EventController extends Controller
     public function fetchInPlayEvents()
     {
         // Fetch in-play events data from the API
-        $response = Http::get('API_URL'); 
+        $response = Http::get('API_URL');
 
         $data = $response->json();
 
