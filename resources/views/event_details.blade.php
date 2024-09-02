@@ -84,7 +84,17 @@
                             <!-- Fancy -->
 
                             @if (!empty($event_details['data']['event']['fancy']))
-                                @include('components.fancy')
+                            @php
+                                $parsedData = \App\Helpers\RunnerHelper::filterAndParseOddsData(
+                                    $rows,
+                                    'FANCY',
+                                    'FANCY',
+                                );
+                            @endphp
+                            @include('components.fancy', [
+                                'parsedData' => $parsedData,
+                            ])
+
                             @endif
                             <!-- Fancy -->
                     </div>

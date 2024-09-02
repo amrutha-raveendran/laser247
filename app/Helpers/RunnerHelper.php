@@ -145,6 +145,7 @@ class RunnerHelper
     $filteredData = array_filter($filteredData, function ($item) use ($filterString) {
         return isset($item[14]) && $item[14] === $filterString;
     });
+
         // Iterate through each item in filtered data
         foreach ($filteredData as $item) {
             // Loop through the array, checking specific indices
@@ -190,7 +191,36 @@ class RunnerHelper
     {
         // First, filter the data based on the filter string
         $filteredData = self::filterOddsData($data, $filterString);
+        if($title=='FANCY')
+        $parsedData = self::parseOddsfancyData($filteredData,$title);
+        else
         $parsedData = self::parseOddsData($filteredData,$title);
+        return $parsedData;
+    }
+
+
+        /**
+     * Parses the filtered data to extract team and odds information.
+     *
+     * @param array $filteredData The filtered data array from the filterOddsData function.
+     * @param string $filterString The string used to filter the data rows.
+     * @return array The parsed data array with teams and their corresponding odds.
+     */
+    public static function parseOddsfancyData(array $filteredData, string $filterString = null): array
+    {
+        $parsedData = [];
+
+        // Loop through each fancy data row
+        foreach ($filteredData as $data) {
+            $parsedData[] = [
+                'title'=>$data[7],
+                'index_17' => $data[17] ?? '0.00', // Value at index 17
+                'index_18' => $data[18] ?? '0.00', // Value at index 18
+                'index_19' => $data[19] ?? '0.00', // Value at index 19
+                'index_20' => $data[20] ?? '0.00', // Value at index 20
+            ];
+        }
+
         return $parsedData;
     }
 }
