@@ -133,15 +133,18 @@ class RunnerHelper
      * Parses the filtered data to extract team and odds information.
      *
      * @param array $filteredData The filtered data array from the filterOddsData function.
+     * @param string $filterString The string used to filter the data rows.
      * @return array The parsed data array with teams and their corresponding odds.
      */
-    public static function parseOddsData(array $filteredData): array
+    public static function parseOddsData(array $filteredData,string $filterString=null): array
     {
-        // Initialize the parsed data array
-        $parsedData = [];
-        $filteredData = array_filter($filteredData, function ($item) {
-            return isset($item[14]) && $item[14] === "BOOKMAKER";
-        });
+    // Initialize the parsed data array
+    $parsedData = [];
+
+    // Filter the data based on the normalized filter string using `use` keyword to pass $filterString
+    $filteredData = array_filter($filteredData, function ($item) use ($filterString) {
+        return isset($item[14]) && $item[14] === $filterString;
+    });
         // Iterate through each item in filtered data
         foreach ($filteredData as $item) {
             // Loop through the array, checking specific indices
@@ -172,6 +175,10 @@ class RunnerHelper
         return $parsedData;
     }
 
+
+
+
+
     /**
      * Main function to filter and parse odds data.
      *
@@ -179,14 +186,11 @@ class RunnerHelper
      * @param string $filterString The string used to filter the data rows.
      * @return array The final parsed data array.
      */
-    public static function filterAndParseOddsData(array $data, string $filterString): array
+    public static function filterAndParseOddsData(array $data, string $filterString,string $title=null): array
     {
         // First, filter the data based on the filter string
         $filteredData = self::filterOddsData($data, $filterString);
-
-        // Then, parse the filtered data to extract odds information
-        $parsedData = self::parseOddsData($filteredData);
-
+        $parsedData = self::parseOddsData($filteredData,$title);
         return $parsedData;
     }
 }
