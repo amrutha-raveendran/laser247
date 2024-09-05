@@ -97,6 +97,26 @@
 
                             @endif
                             <!-- Fancy -->
+
+                             <!-- Markets -->
+
+                             @if (!empty($event_details['data']['event']['markets']))
+                             @php
+
+                                 $parsedData = \App\Helpers\RunnerHelper::filterAndParseOddsData(
+                                     $rows,
+                                     'OPEN',
+                                     'OPEN',
+                                 );
+                             @endphp
+                             @include('components.markets', [
+                                 'parsedData' => $parsedData,
+                                 'event_details'=>$event_details
+
+                             ])
+
+                             @endif
+                             <!-- Markets -->
                     </div>
                     @endif
                     <!--  -->

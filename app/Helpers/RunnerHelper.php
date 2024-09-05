@@ -122,7 +122,6 @@ class RunnerHelper
                     }
                 }
             }
-
             return $filteredData;
         }
 
@@ -193,13 +192,16 @@ class RunnerHelper
         $filteredData = self::filterOddsData($data, $filterString);
         if($title=='FANCY')
         $parsedData = self::parseOddsfancyData($filteredData,$title);
+        else if($title == "OPEN")
+        $parsedData = self::parseOddsMarketsData($filteredData,$title);
         else
         $parsedData = self::parseOddsData($filteredData,$title);
+
         return $parsedData;
     }
 
 
-        /**
+    /**
      * Parses the filtered data to extract team and odds information.
      *
      * @param array $filteredData The filtered data array from the filterOddsData function.
@@ -222,5 +224,50 @@ class RunnerHelper
         }
 
         return $parsedData;
+    }
+
+    /**
+     * Parses the filtered data to extract team and odds information.
+     *
+     * @param array $filteredData The filtered data array from the filterOddsData function.
+     * @param string $filterString The string used to filter the data rows.
+     * @return array The parsed data array with teams and their corresponding odds.
+     */
+    public static function parseOddsMarketsData(array $filteredData, string $filterString = null): array
+    {
+        $parsedData = [];
+
+       // Initialize the result array
+$result = [];
+
+foreach ($filteredData as $subArray) {
+    // Step 1: Store the first index as market_id
+    $market_id = $subArray[0];
+
+    // Step 2: Initialize the structure for this sub-array
+    $entry = [
+        'market_id' => $market_id,
+        'active_segments' => []
+    ];
+
+    // Step 3: Loop through the sub-array and find "ACTIVE" segments
+    for ($i = 0; $i < count($subArray); $i++) {
+        if ($subArray[$i] === 'ACTIVE' && isset($subArray[$i + 12])) {
+            // Extract the 6 values after "ACTIVE"
+            $valuesAfterActive = array_slice($subArray, $i + 1, 12);
+
+            // Add these values to the active_segments
+            $entry['active_segments'][] = [
+                'active' => 'ACTIVE',
+                'values' => $valuesAfterActive
+            ];
+        }
+    }
+
+    // Add the entry to the result array
+    $result[] = $entry;
+}
+
+return $result;
     }
 }
