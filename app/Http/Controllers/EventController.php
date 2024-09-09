@@ -82,10 +82,56 @@ class EventController extends Controller
                 return response()->json(['error' => $e->getMessage()], 500);
             } 
         }
+        else{
+            $events = $this->fetchEvents();
+            $event_list = $this->fetchEventByTypeId($events,$sportId);
+
+            return view('event_list', [
+                'eventlist' => $event_list,
+                'menuData' => $this->commonController->list_menu(),
+                'sidebarEvents' => $this->commonController->sidebar(),
+                'menus' => $this->commonController->header_menus(),
+                'menu_name'=> $this->menuname($sportId)
+            ]);
+        }
         
     }
 
-   
+ /*Get name from menudata */
+     private function menuname($id){
+        $menuData = [
+            ["id" => 4, "name" => "Cricket"],
+            ["id" => 1, "name" => "Football"],
+            ["id" => 2, "name" => "Tennis"],
+            ["id" => 99999, "name" => "Casino"],
+            ["id" => 99995, "name" => "I Casino"],
+            ["id" => 7, "name" => "Horse Racing"],
+            ["id" => 4339, "name" => "Greyhound Racing"],
+            ["id" => 99994, "name" => "Kabaddi"],
+            ["id" => 2378961, "name" => "Politics"],
+            ["id" => 99991, "name" => "Sports book"],
+            ["id" => 99998, "name" => "Int Casino"],
+            ["id" => 99990, "name" => "Binary"],
+            ["id" => 99997, "name" => "Casino Vivo"],
+            ["id" => 26420387, "name" => "Mixed Martial Arts"],
+            ["id" => 998917, "name" => "Volleyball"],
+            ["id" => 7524, "name" => "Ice Hockey"],
+            ["id" => 7522, "name" => "Basketball"],
+            ["id" => 7511, "name" => "Baseball"],
+            ["id" => 3503, "name" => "Darts"],
+            ["id" => 29, "name" => "Futsal"],
+            ["id" => 20, "name" => "Table Tennis"],
+            ["id" => 5, "name" => "Rugby"]
+        ];
+        $result = array_filter($menuData, function($item) use ($id) {
+            return $item['id'] == $id;
+        });
+        if (!empty($result)) {
+            // Assuming there's only one match
+            return reset($result)['name'];
+        }
+     }
+ /* */
 
     /**
      * Fetch event details by event ID.
@@ -131,7 +177,17 @@ class EventController extends Controller
             }
         });
     }
-
+/** *
+    * Group events by their event type id
+    * @param array $events
+    * @param $event_type_id
+*/
+    private function fetchEventByTypeId($events,$eventId)
+    {
+        return array_filter($events, function($event) use ($eventId) {
+            return $event['event_type_id'] == $eventId;
+        });
+    }
     /**
      * Group events by their type ID.
      *

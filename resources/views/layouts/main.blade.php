@@ -43,35 +43,29 @@
             <li class="nav-item">
               <a class="nav-link" href="{{ route('dashboard')}}">In-play</a>
             </li>
-            @if(isset($menus['evnt_list']['data']['menu']) && is_array($menus['evnt_list']['data']['menu']))
-              @foreach($menus['evnt_list']['data']['menu'] as $menuItem)
-                @if(isset($menuItem['name']))
-                  <li class="nav-item">
-                    <a class="nav-link {{ ($menuItem['id'] == '99995' || $menuItem['id'] == '99999') ? 'hightlight-menus' : (($menuItem['id'] == '99991') ? 'rc-menu' : '') }}" href="">
-                      {{ $menuItem['name'] }}<sup class="sup-animated">{{ ($menuItem['id'] == '99991' || $menuItem['id'] == '99990') ? 'NEW' : '' }}</sup>
-                    </a>
-                  </li>
-                @else
-                  <li class="nav-item">
-                    <span class="nav-link">Menu item data is incomplete.</span>
-                  </li>
-                @endif
-              @endforeach
-            @else
-              <li class="nav-item">
-                <span class="nav-link">No menu items available.</span>
-              </li>
+            @if(is_array($menus))
+              @if(isset($menus['evnt_list']['data']['menu']) && is_array($menus['evnt_list']['data']['menu']))
+                @foreach($menus['evnt_list']['data']['menu'] as $menuItem)
+                  @if(isset($menuItem['name']) )
+                    <li class="nav-item">
+                      <a href="{{ route('events.sports', ['sportId' => $menuItem['id']]) }}" class="nav-link {{($menuItem['id'] =='99995'||$menuItem['id']=='99999')?'hightlight-menus':(($menuItem['id']=='99991')?'rc-menu':'')}}" href="" >
+                        {{ $menuItem['name'] }}<sup class="sup-animated">{{($menuItem['id']=='99991' || $menuItem['id']=='99990')?'NEW':''}}</sup>
+                      </a>
+                    </li>
+                  @else
+                    <li class="nav-item">
+                      <span class="nav-link">Menu item data is incomplete.</span>
+                    </li>
+                  @endif
+                @endforeach
+              @endif
             @endif
           </ul>
         </div>
       </div>
     </nav>
-
     @yield('content')
     @yield('scripts')
-
-    
-
     <script>
       // Custom scripts
       // Example: Handling menu links with submenus

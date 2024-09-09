@@ -22,12 +22,14 @@
                 </div>
                 <div class="as-banner-2-text">
                     <p class="banner-2-p"><span class="banner-2-icon"></span>LIVE</p>
-                    @if(isset($menus['evnt_list']['data']['menu']) && is_array($menus['evnt_list']['data']['menu']))
-                        @foreach($menus['evnt_list']['data']['menu'] as $menuItem)
-                            @if(isset($menuItem['name']) )
-                                <div><a href=""><h3>{{($menuItem['name'])}}</h3></a></div>
-                                @endif
-                        @endforeach
+                    @if(is_array($menus))
+                        @if(isset($menus['evnt_list']['data']['menu']) && is_array($menus['evnt_list']['data']['menu']))
+                            @foreach($menus['evnt_list']['data']['menu'] as $menuItem)
+                                @if(isset($menuItem['name']) )
+                                    <div><a href=""><h3>{{($menuItem['name'])}}</h3></a></div>
+                                    @endif
+                            @endforeach
+                        @endif
                     @endif 
                 </div>
             </div>

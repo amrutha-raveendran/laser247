@@ -1,11 +1,10 @@
-@extends('layouts.main')
+@extends('layouts.main-demo')
 
 @section('content')
 <!-- Content -->
 <div  class="content-page inPlay">
     <div  class="content">
-        <div  class="container-fluid"><router-outlet
-                ></router-outlet><app-in-play _nghost-lkv-c84="">
+        <div  class="container-fluid">
                 <div  class="row">
                     <div  class="col-xl-8 px-lg-1">
                         <div  id="My-Slider" data-bs-ride="carousel"
@@ -19,18 +18,18 @@
                                 </li>
                             </ol>
                             <div  role="listbox" class="carousel-inner">
-                                <div  class="carousel-item active"><img 
-                                        src="assets/img/bnr1.webp" class="img-fluid d-none d-sm-block"><img
-                                         src="assets/img/m_bnr1.webp"
-                                        class="img-fluid d-block d-sm-none"></div>
-                                <div  class="carousel-item"><img 
-                                        src="assets/img/bnr2.webp" class="img-fluid d-none d-sm-block"><img
-                                         src="assets/img/m_bnr2.webp"
-                                        class="img-fluid d-block d-sm-none"></div>
-                                <div  class="carousel-item"><img 
-                                        src="assets/img/bnr3.webp" class="img-fluid d-none d-sm-block"><img
-                                         src="assets/img/m_bnr3.webp"
-                                        class="img-fluid d-block d-sm-none"></div>
+                                <div  class="carousel-item active">
+                                    <img src="assets/img/bnr1.webp" class="img-fluid d-none d-sm-block">
+                                    <img src="assets/img/m_bnr1.webp" class="img-fluid d-block d-sm-none">
+                                </div>
+                                <div  class="carousel-item">
+                                    <img src="assets/img/bnr2.webp" class="img-fluid d-none d-sm-block">
+                                    <img src="assets/img/m_bnr2.webp" class="img-fluid d-block d-sm-none">
+                                </div>
+                                <div  class="carousel-item">
+                                    <img src="assets/img/bnr3.webp" class="img-fluid d-none d-sm-block">
+                                    <img src="assets/img/m_bnr3.webp" class="img-fluid d-block d-sm-none">
+                                </div>
                             </div>
                         </div>
                         <ul  id="pills-tab" role="tablist" class="nav nav-pills es-tabs-ui">
