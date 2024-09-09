@@ -4,8 +4,7 @@
 <!-- Content -->
 <div  class="content-page inPlay">
     <div  class="content">
-        <div  class="container-fluid"><router-outlet
-                ></router-outlet><app-in-play _nghost-lkv-c84="">
+        <div  class="container-fluid">
                 <div  class="row">
                     <div  class="col-xl-8 px-lg-1">
                         <div  id="My-Slider" data-bs-ride="carousel"
