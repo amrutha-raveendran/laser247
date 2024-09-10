@@ -53,6 +53,12 @@
                         // Only keep complete pairs
                         $backValues = array_chunk($backValues, 2);
                         $layValues = array_chunk($layValues, 2);
+
+                        // Sort back values in decreasing order
+                        usort($backValues, fn($a, $b) => ($b[0] <=> $a[0]));
+
+                        // Sort lay values in increasing order
+                        usort($layValues, fn($a, $b) => ($a[0] <=> $b[0]));
                     @endphp
 
                     <div class="row mx-0 odds_body">
@@ -63,17 +69,21 @@
                             <div class="btn-group dOddsBox">
                                 @foreach(array_slice($backValues, 0, 3) as $backPair)
                                     @foreach($backPair as $index => $backValue)
-                                        <button class="back back{{ $key }}">
-                                            {{ $backValue }} <span>{{ $backPair[$index + 1] ?? '' }}</span>
-                                        </button>
+                                        @if($index % 2 == 0)
+                                            <button class="back back{{ $key }}">
+                                                {{ $backValue }} <span>{{ $backPair[$index + 1] ?? '' }}</span>
+                                            </button>
+                                        @endif
                                     @endforeach
                                 @endforeach
 
                                 @foreach(array_slice($layValues, 0, 3) as $layPair)
                                     @foreach($layPair as $index => $layValue)
-                                        <button class="lay lay{{ $key }}">
-                                            {{ $layValue }} <span>{{ $layPair[$index + 1] ?? '' }}</span>
-                                        </button>
+                                        @if($index % 2 == 0)
+                                            <button class="lay lay{{ $key }}">
+                                                {{ $layValue }} <span>{{ $layPair[$index + 1] ?? '' }}</span>
+                                            </button>
+                                        @endif
                                     @endforeach
                                 @endforeach
                             </div>
