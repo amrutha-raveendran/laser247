@@ -40,25 +40,31 @@
 
                 @foreach($markets_data['runners'] as $key => $market_runners)
                     @php
-                        // Extract all values from the market_data's active segments
-                        $allValues = collect($market_data['active_segments'])
-                            ->flatMap(fn($segment) => $segment['values'])
-                            ->take(24)
-                            ->all();
+                        $backValues = [];
+                        $layValues = [];
 
-                        // Limit to 12 back values and 12 lay values
-                        $backValues = array_slice($allValues, 0, 12);
-                        $layValues = array_slice($allValues, 12, 12);
+                        // Iterate through active segments and separate back and lay values
+                        foreach ($market_data['active_segments'] as $segment) {
+                            if ($segment['active'] === 'ACTIVE') {
+                                // Separate values into back and lay
+                                $values = $segment['values'];
 
-                        // Only keep complete pairs
-                        $backValues = array_chunk($backValues, 2);
-                        $layValues = array_chunk($layValues, 2);
+                                // Back values: first 6
+                                $backValues = array_merge($backValues, array_slice($values, 0, 6));
 
-                        // Sort back values in decreasing order
-                        usort($backValues, fn($a, $b) => ($b[0] <=> $a[0]));
+                                // Lay values: remaining
+                                $layValues = array_merge($layValues, array_slice($values, 6));
+                            }
+                               // Ensure values are sorted and chunked
+                        usort($backValues, fn($a, $b) => ($b <=> $a));
+                        usort($layValues, fn($a, $b) => ($a <=> $b));
 
-                        // Sort lay values in increasing order
-                        usort($layValues, fn($a, $b) => ($a[0] <=> $b[0]));
+                        // Create pairs
+                        $backPairs = array_chunk(array_slice($backValues, 0, 6), 2);
+                        $layPairs = array_chunk(array_slice($layValues, 0, 6), 2);
+                        }
+
+
                     @endphp
 
                     <div class="row mx-0 odds_body">
@@ -67,24 +73,16 @@
                         </div>
                         <div class="col-md-7 col-5 px-0">
                             <div class="btn-group dOddsBox">
-                                @foreach(array_slice($backValues, 0, 3) as $backPair)
-                                    @foreach($backPair as $index => $backValue)
-                                        @if($index % 2 == 0)
-                                            <button class="back back{{ $key }}">
-                                                {{ $backValue }} <span>{{ $backPair[$index + 1] ?? '' }}</span>
-                                            </button>
-                                        @endif
-                                    @endforeach
+                                @foreach($backPairs as $backPair)
+                                    <button class="back back{{ $key }}">
+                                        {{ $backPair[0] ?? '' }} <span>{{ $backPair[1] ?? '' }}</span>
+                                    </button>
                                 @endforeach
 
-                                @foreach(array_slice($layValues, 0, 3) as $layPair)
-                                    @foreach($layPair as $index => $layValue)
-                                        @if($index % 2 == 0)
-                                            <button class="lay lay{{ $key }}">
-                                                {{ $layValue }} <span>{{ $layPair[$index + 1] ?? '' }}</span>
-                                            </button>
-                                        @endif
-                                    @endforeach
+                                @foreach($layPairs as $layPair)
+                                    <button class="lay lay{{ $key }}">
+                                        {{ $layPair[0] ?? '' }} <span>{{ $layPair[1] ?? '' }}</span>
+                                    </button>
                                 @endforeach
                             </div>
                         </div>
