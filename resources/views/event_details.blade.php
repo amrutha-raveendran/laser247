@@ -23,22 +23,36 @@
                         </div>
                         <!-- Event Details -->
                         @if (!empty($event_details['data']['event']))
-                            <div class="dScreen">
-                                <!-- Match Odds Header -->
-                                @isset($event_details['data']['event']['match_odds'])
-                                    @include('components.odds-header', [
-                                        'market' => $event_details['data']['event']['match_odds'],
-                                    ])
-                                    @php
-                                        $pairs = \App\Helpers\RunnerHelper::processRunnerData($rows);
+                        <div class="dScreen">
+                            <!-- Markets Header -->
+                            @if (!empty($event_details['data']['event']['markets']))
+                                @php
+                                    $parsedData = \App\Helpers\RunnerHelper::filterAndParseOddsData(
+                                        $rows,
+                                        'OPEN',
+                                        'OPEN'
+                                    );
+                                @endphp
+                                @include('components.markets', [
+                                    'parsedData' => $parsedData,
+                                    'event_details' => $event_details,
+                                ])
+                            @elseif (!empty($event_details['data']['event']['match_odds']))
+                                @include('components.odds-header', [
+                                    'market' => $event_details['data']['event']['match_odds'],
+                                ])
+                                @php
+                                    $pairs = \App\Helpers\RunnerHelper::processRunnerData($rows);
+                                @endphp
+                                @include('components.runner-odds', [
+                                    'runners' => $event_details['data']['event']['match_odds']['runners'],
+                                    'pairs' => $pairs,
+                                ])
+                            @endif
+                            <!-- Match Odds -->
+                        </div>
 
-                                    @endphp
-                                    @include('components.runner-odds', [
-                                        'runners' => $event_details['data']['event']['match_odds']['runners'],
-                                        'pairs' => $pairs,
-                                    ])
-                                @endisset
-                            </div>
+
                             <!-- MatchOdds -->
                             <!-- Bookmakers -->
 
@@ -98,25 +112,7 @@
                             @endif
                             <!-- Fancy -->
 
-                             <!-- Markets -->
 
-                             @if (!empty($event_details['data']['event']['markets']))
-                             @php
-
-                                 $parsedData = \App\Helpers\RunnerHelper::filterAndParseOddsData(
-                                     $rows,
-                                     'OPEN',
-                                     'OPEN',
-                                 );
-                             @endphp
-                             @include('components.markets', [
-                                 'parsedData' => $parsedData,
-                                 'event_details'=>$event_details
-
-                             ])
-
-                             @endif
-                             <!-- Markets -->
                     </div>
                     @endif
                     <!--  -->
