@@ -81,25 +81,79 @@
                                                 <div class="tabcasino">
                                                     <div>
                                                         <tabset class="casino_tabs_ul tab-container">
-                                                            <ul class="nav nav-tabs" id="parentTab" role="tablist">
-                                                                <li class="nav-item" role="presentation">
+                                                            <!-- Main Tabs -->
+                                                            <ul class="nav nav-tabs" id="mainTab" role="tablist">
+                                                                <li class="nav-item  ng-star-inserted" role="presentation">
                                                                     <a class="nav-link active" id="parent-tab-1" data-bs-toggle="tab" data-bs-target="#parent1"  role="tab" >All</a>
                                                                 </li>
                                                                 @if(isset($intcasino_events['data']['tables']))
-                                                                  @foreach($intcasino_events['data']['tables'] as  $ievents)
+                                                                    @foreach($intcasino_events['data']['tables'] as  $ievents)
                                                                         @foreach($ievents as  $ikey => $ivnt) 
-                                                                        
                                                                             <li class="nav-item" role="presentation">
-                                                                                <a class="nav-link" id="tab-2-{{str_replace(' ','',$ikey)}}" data-bs-toggle="tab" data-bs-target="#tab2_{{str_replace(' ','',$ikey)}}"  role="tab">{{$ikey}}</a>
+                                                                                <a class="nav-link" data-bs-toggle="tab" href="#{{ str_replace(' ','',$ikey)}}" role="tab" aria-controls="{{ str_replace(' ','',$ikey)}}" aria-selected="@if ($loop->first) true @else false @endif">{{ $ikey }}</a>
                                                                             </li>
                                                                         @endforeach
-                                                                  @endforeach
+                                                                    @endforeach
                                                                 @endif
-                                                            </ul>
-                                                            
-
-
-                                                            <div id="content">
+                                                            </ul>   
+                                                            <!-- Main tabs -->
+                                                            <div class="tab-content" id="mainTabContent">
+                                                                @foreach($intcasino_events['data']['tables'] as $game_array)
+                                                                    @foreach($game_array  as $provider => $games)
+                                                                        <div class="tab-pane fade icasino_ul_tabs" id="{{ str_replace(' ','',$provider)}}" role="tabpanel" aria-labelledby="tab-{{ str_replace(' ','',$provider)}}">
+                                                                            <!-- Sub Tabs (Games) -->
+                                                                            <ul class="nav nav-pills nav-tabs" id="subTab-{{ str_replace(' ','',$provider)}}" role="tablist">
+                                                                                <li class="nav-item" role="presentation">
+                                                                                    <a class="nav-link active" id="subtab-{{ str_replace(' ','',$provider)}}-all" data-bs-toggle="tab" href="#{{ str_replace(' ','',$provider)}}-all" role="tab" aria-controls="{{ str_replace(' ','',$provider)}}-all" aria-selected="true">All</a>
+                                                                                </li>
+                                                                                @foreach($games as $game => $details)
+                                                                                    <li class="nav-item" role="presentation">
+                                                                                        <a class="nav-link" id="subtab-{{ str_replace(' ','',$provider)}}-{{ $game }}" data-bs-toggle="tab" href="#{{ str_replace(' ','',$provider)}}-{{ $game }}" role="tab" aria-controls="{{ str_replace(' ','',$provider)}}-{{ $game }}" aria-selected="false">
+                                                                                            {{ ucfirst($game) }}
+                                                                                        </a>
+                                                                                    </li>
+                                                                                @endforeach
+                                                                            </ul>
+                                                                            <!-- Sub Tab Content (Games Content) -->
+                                                                            <div class="tab-content mt-3" id="subTabContent-{{ str_replace(' ','',$provider)}}">
+                                                                                <!-- "All" Tab Content (Shows All Games for the Provider) -->
+                                                                                <div class="tab-pane fade show active" id="{{ str_replace(' ','',$provider)}}-all" role="tabpanel" aria-labelledby="subtab-{{ str_replace(' ','',$provider)}}-all">
+                                                                                    
+                                                                                    <div class="row py-2 mx-0 justify-content-center">
+                                                                                        @foreach($games as $game => $gamealltab)
+                                                                                            @foreach($gamealltab as $galltab)
+                                                                                                <div class="col-md-2 col-4 align-self-center text-center">
+                                                                                                    <div class="casino position-relative">
+                                                                                                        <img src="{{$galltab['url_thumb']}}" class="img-fluid" alt="">
+                                                                                                        <a href="" class="btn casino-btn">Play Now</a>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            @endforeach
+                                                                                        @endforeach
+                                                                                    </div>
+                                                                                </div>
+                                                                                <!-- Individual Game Tab Content -->
+                                                                                @foreach($games as $game => $gamesubtab)
+                                                                                    <div class="tab-pane fade" id="{{ str_replace(' ','',$provider)}}-{{ $game }}" role="tabpanel" aria-labelledby="subtab-{{ $provider }}-{{ $game }}">
+                                                                                        <!-- Display game-specific content here -->
+                                                                                        <div class="row py-2 mx-0 justify-content-center">
+                                                                                            @foreach($gamesubtab as $gsubtab)
+                                                                                                <div class="col-md-2 col-4 align-self-center text-center">
+                                                                                                    <div class="casino position-relative">
+                                                                                                        <img src="{{$gsubtab['url_thumb']}}" class="img-fluid" alt="">
+                                                                                                        <a href="" class="btn casino-btn">Play Now</a>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            @endforeach
+                                                                                        </div>
+                                                                                    </div>
+                                                                                @endforeach
+                                                                            </div>
+                                                                        </div>
+                                                                    @endforeach
+                                                                @endforeach
+                                                            </div>
+                                                            <div id="content" class="tab-content">
                                                                 <tab class="tab-pane fade show active" id="parent1" role="tabpanel" aria-labelledby="parent-tab-1">
                                                                     <div class="icasino_ul_tabs">
                                                                         <div class="tab-container">
@@ -137,71 +191,8 @@
                                                                        
                                                                     </div>
                                                                 </tab>
-
-                                                                @if(isset($intcasino_events['data']['tables']))
-                                                                    @foreach($intcasino_events['data']['tables'] as  $tab2events)
-                                                                        @foreach($tab2events as  $tab2key => $tabevent)
-                                                                        
-                                                                            <tab class="tab-pane fade" id="tab2_{{str_replace(' ','',$tab2key)}}" role="tabpanel" aria-labelledby="tab-2-{{str_replace(' ','',$tab2key)}}">
-                                                                                <div class="icasino_ul_tabs">
-                                                                                    <div class="tab-container">
-                                                                                        <!-- Nested Tabs for Parent Tab 2 -->
-                                                                                        <ul class="nav nav-tabs" id="childTab2" role="tablist">
-                                                                                            <li class="nav-item" role="presentation">
-                                                                                                <a class="nav-link active allgametype" id="taball-{{str_replace(' ','',$tab2key)}}" data-bs-toggle="tab" data-bs-target="#taball-{{str_replace(' ','',$tab2key)}}" type="button" role="tab" aria-controls="taball-{{str_replace(' ','',$tab2key)}}" aria-selected="true">All</a>
-                                                                                            </li>
-                                                                                            @foreach($tab2events[$tab2key] as $tab2subkey => $tab2subevent)
-                                                                                                <li class="nav-item" role="presentation">
-                                                                                                    <a class="nav-link gametab" id="subtab-2-{{str_replace(' ','',$tab2key)}}-{{str_replace(' ','',$tab2subkey)}}" data-bs-toggle="tab" data-bs-target="#subtab2-{{str_replace(' ','',$tab2key)}}-{{str_replace(' ','',$tab2subkey)}}" type="button" role="tab" aria-controls="subtab2-{{str_replace(' ','',$tab2key)}}-{{str_replace(' ','',$tab2subkey)}}" aria-selected="false">{{ $tab2subkey}}</a>
-                                                                                                </li>
-                                                                                            @endforeach
-                                                                                        </ul>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <!-- oldcode -->
-                                                                                <div class="tab-content" id="childTabContent2">
-                                                                                    <!-- Child Tab 1 Content for Parent Tab 2 -->
-                                                                                   
-                                                                                    @foreach($tab2events as $typekey=> $allgametypes)
-                                                                                        <tab class="tab-pane fade  {{($loop->first)?'show active':''}}" id="taball-{{str_replace(' ','',$typekey)}}" role="tabpanel" aria-labelledby="taball-{{str_replace(' ','',$typekey)}}">
-                                                                                            <div class="row py-2 mx-0 justify-content-center">
-                                                                                                @foreach($tabevent as $subtab2 =>$secontab)
-                                                                                                    @foreach($secontab as $i2events)
-                                                                                            
-                                                                                                    <div class="col-md-2 col-4 align-self-center text-center">
-                                                                                                        <div class="casino position-relative">
-                                                                                                            <img src="{{$i2events['url_thumb']}}" class="img-fluid" alt="">
-                                                                                                            <a href="" class="btn casino-btn">Play Now</a>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                    @endforeach
-                                                                                                @endforeach
-                                                                                            </div>
-                                                                                        </tab>
-                                                                                    @endforeach
-                                                                              
-                                                                                    <!-- Child Tab 2 Content for Parent Tab 2 -->
-                                                                                    @foreach($tab2events[$tab2key] as $tab3subkey => $tab3subevent) 
-                                                                                    
-                                                                                        <tab class="tab-pane fade" id="subtab2-{{str_replace(' ','',$tab2key)}}-{{str_replace(' ','',$tab3subkey)}}" role="tabpanel" aria-labelledby="subtab-2-{{str_replace(' ','',$tab3subkey)}}-{{str_replace(' ','',$tab2subkey)}}">
-                                                                                            <div class="row py-2 mx-0 justify-content-center">
-                                                                                                @foreach($tab3subevent as $i3events)
-                                                                                                    <div class="col-md-2 col-4 align-self-center text-center">
-                                                                                                        <div class="casino position-relative">
-                                                                                                            <img src="{{$i3events['url_thumb']}}" class="img-fluid" alt="">
-                                                                                                            <a href="" class="btn casino-btn">Play Now</a>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                @endforeach
-                                                                                            </div>
-                                                                                        </tab>
-                                                                                    @endforeach
-                                                                                </div>
-                                                                                <!-- endcode -->
-                                                                            </tab>
-                                                                        @endforeach
-                                                                    @endforeach
-                                                                @endif
+                                                                <!-- ---------------------- -->
+                                                                
                                                             </div>
                                                         </tabset>
                                                     </div>

@@ -87,14 +87,14 @@
                                                     </div>
                                                     <div class="col-md-1"></div>
                                                 </div>
-                                                <div >
+                                                <div>
                                                     @if(!empty($eventlist))
                                                     @foreach($eventlist as $evnts)
                                                         <div >
                                                             <div class="row align-items-center row-my">
                                                                 <div class="col-md-6 col-10 px-1">
                                                                         <p class="matchname">
-                                                                            <a class="{{($evnts['in_play']=='1')?'item-inplay':''}}">
+                                                                            <a class="{{($evnts['in_play']=='1')?'item-inplay':''}}" href="{{ route('event.details', $evnts['event_id']) }}">
                                                                                 @if ($evnts['in_play'])
                                                                                     <img src="{{ asset('assets/img/icon-in_play.png')}}" class="img-fluid">
                                                                                 @else
@@ -149,7 +149,10 @@
                                                             </div>
                                                         <div >
                                                         @endforeach
+                                                        @else
+                                                        <div class="no-data">No Data Found</div>
                                                     @endif
+                                                    
                                                 </div>
                                             </div>
                                         </div>

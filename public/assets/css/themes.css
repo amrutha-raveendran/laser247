@@ -2109,6 +2109,9 @@ p.match-odds.premium_cricket {
 
 .no-data {
   text-align: left;
+    color: white;
+    padding: 3px;
+    font-size: 12px;
 }
 .inplay .tab-content .mb-1{
   border-bottom: 2px solid var(--theme-color);
