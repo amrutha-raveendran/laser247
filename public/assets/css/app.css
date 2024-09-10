@@ -525,12 +525,17 @@ marquee {
     background: #fff;
 }
 .events-tab{
+    display: flex;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+}
+/* .events-tab{
     display: ruby-text;
     overflow-x: auto;
 }
 .events-tab li {
     display: inline-block;
-}
+} */
 .events-tab li a.active, .event-list .nav-pills li a:hover {
     background: #000 !important;
     color: #fff !important;
@@ -590,4 +595,9 @@ marquee {
 .fade:not(.show) {
     opacity: 0;
     display: none !important;
+}
+.icasino_ul_tabs .nav-pills li a:hover {
+    background: var(--white-bg) !important;
+    color: #3B5160 !important;
+
 }

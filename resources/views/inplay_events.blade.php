@@ -88,15 +88,9 @@
                                                         <div  class="col-md-5"></div>
                                                         <div  class="col-md-6 px-lg-0">
                                                             <div  class="oddsEventlist">
-                                                                <div  class="btn-group">
-                                                                    <span >1</span>
-                                                                </div>
-                                                                <div  class="btn-group">
-                                                                    <span >X</span>
-                                                                </div>
-                                                                <div  class="btn-group">
-                                                                    <span >2</span>
-                                                                </div>
+                                                                <div  class="btn-group"><span >1</span></div>
+                                                                <div  class="btn-group"><span >X</span></div>
+                                                                <div  class="btn-group"><span >2</span></div>
                                                             </div>
                                                         </div>
                                                         <div  class="col-md-1"></div>
@@ -104,20 +98,19 @@
                                                     @foreach($events as $event)
                                                         @php
                                                         $marketId = $event['market_id'];
-                                    $marketDataString = $rows['rows'][$marketId] ?? '';
-                                    $values = [];
+                                                        $marketDataString = $rows['rows'][$marketId] ?? '';
+                                                        $values = [];
 
-                                    // Check if marketDataString is not empty before processing
-                                    if (!empty($marketDataString)) {
-                                        $data = explode('|', $marketDataString);
-                                        $values = [
-                                            $data[12] ?? '-',
-                                            $data[16] ?? '-',
-                                            $data[25] ?? '-',
-                                            $data[42] ?? '-'
-                                        ];
-                                    }
-
+                                                        // Check if marketDataString is not empty before processing
+                                                        if (!empty($marketDataString)) {
+                                                            $data = explode('|', $marketDataString);
+                                                            $values = [
+                                                                $data[12] ?? '-',
+                                                                $data[16] ?? '-',
+                                                                $data[25] ?? '-',
+                                                                $data[42] ?? '-'
+                                                            ];
+                                                        }
                                                         @endphp
                                                         <div  class="row align-items-center row-my">
                                                             <div  class="col-md-5 px-1 col-10">
@@ -135,13 +128,16 @@
                                                             <div  class="col-md-6 col px-0">
                                                                 <div  class="oddsEventlist">
                                                                     <div  class="btn-group">
-                                                                        <button  class="back" fdprocessedid="e9sqyd"> {{ $values[0] ?? '-' }}  </button><button  class="lay" fdprocessedid="6blhb"> {{ $values[1] ?? '-' }} </button>
+                                                                        <button  class="back"> {{ $values[0] ?? '-' }}  </button>
+                                                                        <button  class="lay"> {{ $values[1] ?? '-' }} </button>
                                                                     </div>
                                                                     <div  class="btn-group">
-                                                                        <button  class="back" fdprocessedid="zq3z6">-</button><button  class="lay" fdprocessedid="a1e6gm">-</button>
+                                                                        <button  class="back">-</button>
+                                                                        <button  class="lay">-</button>
                                                                     </div>
                                                                     <div  class="btn-group">
-                                                                        <button  class="back">{{ $values[3] ?? '-' }} </button><button  class="lay" fdprocessedid="7azlm">{{ $values[4] ?? '-' }} </button>
+                                                                        <button  class="back">{{ $values[3] ?? '-' }} </button>
+                                                                        <button  class="lay">{{ $values[4] ?? '-' }} </button>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -172,62 +168,49 @@
                                                         <div  class="col-md-5"></div>
                                                         <div  class="col-md-6 px-lg-0">
                                                             <div  class="oddsEventlist">
-                                                                <div  class="btn-group">
-                                                                    <span >1</span>
-                                                                </div>
-                                                                <div  class="btn-group">
-                                                                    <span >X</span>
-                                                                </div>
-                                                                <div  class="btn-group">
-                                                                    <span >2</span>
-                                                                </div>
+                                                                <div  class="btn-group"><span >1</span></div>
+                                                                <div  class="btn-group"><span >X</span></div>
+                                                                <div  class="btn-group"><span >2</span></div>
                                                             </div>
                                                         </div>
                                                         <div  class="col-md-1"></div>
                                                     </div>
                                                     @foreach($events as $event)
-
-                                                        @php
-
+                                                    @php
                                                         $marketId = $event['market_id'];
-                                    $marketDataString = $rows['rows'][$marketId] ?? '';
-                                    $values = [];
-
-                                    // Check if marketDataString is not empty before processing
-                                    if (!empty($marketDataString)) {
-                                        $data = explode('|', $marketDataString);
-
-                                        $values = [
-                                            $data[12] ?? '',
-                                            $data[16] ?? '',
-                                            $data[25] ?? '',
-                                            $data[42] ?? ''
-                                        ];
-                                    }
-                                                        @endphp
-                                                        <div  class="row align-items-center row-my">
-                                                            <div  class="col-md-5 px-1 col-10">
-                                                                <p  class="matchname">
-                                                                    <a  class="item-inplay" href="{{ route('event.details', $event['event_id']) }}">
-                                                                        <img  src="assets/img/icon-in_play.png" class="img-fluid"> {{ $event['name'] }} ({{ $event['competition_name'] }})
-                                                                    </a>
-                                                                    <b>
+                                                        $marketDataString = $rows['rows'][$marketId] ?? '';
+                                                        $values = [];
+                                                        // Check if marketDataString is not empty before processing
+                                                        if (!empty($marketDataString)) {
+                                                            $data = explode('|', $marketDataString);
+                                                            $values = [$data[12] ?? '',$data[16] ?? '',$data[25] ?? '',$data[42] ?? ''];
+                                                        }
+                                                    @endphp
+                                                    <div  class="row align-items-center row-my">
+                                                        <div  class="col-md-5 px-1 col-10">
+                                                            <p  class="matchname">
+                                                                <a  class="item-inplay" href="{{ route('event.details', $event['event_id']) }}">
+                                                                    <img  src="assets/img/icon-in_play.png" class="img-fluid"> {{ $event['name'] }} ({{ $event['competition_name'] }})
+                                                                </a>
+                                                                <b>
                                                                     {{ ($event['in_play']==1)?'<span  class="in_play">in_play In-Play</span>':'' }}
-                                                                        <span  class="game-bm"><img  src="assets/img/icon-bookmaker.svg" class="img-fluid"></span>
-                                                                        <span  class="timer-on">{{ \Carbon\Carbon::parse($event['open_date'])->format('H:i') }} </span>
-                                                                    </b>
-                                                                </p>
-                                                            </div>
+                                                                    <span  class="game-bm"><img  src="assets/img/icon-bookmaker.svg" class="img-fluid"></span>
+                                                                    <span  class="timer-on">{{ \Carbon\Carbon::parse($event['open_date'])->format('H:i') }} </span>
+                                                                </b>
+                                                            </p>
+                                                        </div>
                                                             <div  class="col-md-6 col px-0">
                                                                 <div  class="oddsEventlist">
                                                                     <div  class="btn-group">
-                                                                        <button  class="back" fdprocessedid="e9sqyd">{{ $values[0] ?? '-' }}</button><button  class="lay" fdprocessedid="6blhb">{{ $values[1] ?? '-' }}</button>
+                                                                        <button  class="back">{{ $values[0] ?? '-' }}</button>
+                                                                        <button  class="lay">{{ $values[1] ?? '-' }}</button>
                                                                     </div>
                                                                     <div  class="btn-group">
-                                                                        <button  class="back" fdprocessedid="zq3z6">-</button><button  class="lay" fdprocessedid="a1e6gm">-</button>
+                                                                        <button  class="back">-</button><button  class="lay">-</button>
                                                                     </div>
                                                                     <div  class="btn-group">
-                                                                        <button  class="back">{{ $values[3] ?? '-' }}</button><button  class="lay" fdprocessedid="7azlm">{{ $values[4] ?? '-' }}</button>
+                                                                        <button  class="back">{{ $values[3] ?? '-' }}</button>
+                                                                        <button  class="lay">{{ $values[4] ?? '-' }}</button>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -239,7 +222,7 @@
                                         @endforeach
                                     </tab>
                                     <tab role="tabpanel" aria-labelledby="tab0-link" id="tomorrow" class="tab-pane">
-                                    @foreach($groupedEvents['Tomorrow'] as $eventTypeName => $events)
+                                        @foreach($groupedEvents['Tomorrow'] as $eventTypeName => $events)
                                             <div>
                                                 <div class="mb-1">
                                                     <h2>{{ $eventTypeName }}
@@ -258,35 +241,28 @@
                                                         <div  class="col-md-5"></div>
                                                         <div  class="col-md-6 px-lg-0">
                                                             <div  class="oddsEventlist">
-                                                                <div  class="btn-group">
-                                                                    <span >1</span>
-                                                                </div>
-                                                                <div  class="btn-group">
-                                                                    <span >X</span>
-                                                                </div>
-                                                                <div  class="btn-group">
-                                                                    <span >2</span>
-                                                                </div>
+                                                                <div  class="btn-group"><span >1</span></div>
+                                                                <div  class="btn-group"><span >X</span></div>
+                                                                <div  class="btn-group"><span >2</span></div>
                                                             </div>
                                                         </div>
                                                         <div  class="col-md-1"></div>
                                                     </div>
                                                     @foreach($events as $event)
                                                         @php
-                                                        $marketId = $event['market_id'];
-                                    $marketDataString = $rows['rows'][$marketId] ?? '';
-                                    $values = [];
-
-                                    // Check if marketDataString is not empty before processing
-                                    if (!empty($marketDataString)) {
-                                        $data = explode('|', $marketDataString);
-                                        $values = [
-                                            $data[12] ?? '',
-                                            $data[16] ?? '',
-                                            $data[25] ?? '',
-                                            $data[42] ?? ''
-                                        ];
-                                    }
+                                                            $marketId = $event['market_id'];
+                                                            $marketDataString = $rows['rows'][$marketId] ?? '';
+                                                            $values = [];
+                                                            // Check if marketDataString is not empty before processing
+                                                            if (!empty($marketDataString)) {
+                                                                $data = explode('|', $marketDataString);
+                                                                $values = [
+                                                                    $data[12] ?? '',
+                                                                    $data[16] ?? '',
+                                                                    $data[25] ?? '',
+                                                                    $data[42] ?? ''
+                                                                ];
+                                                            }
                                                         @endphp
                                                         <div  class="row align-items-center row-my">
                                                             <div  class="col-md-5 px-1 col-10">
@@ -304,13 +280,16 @@
                                                             <div  class="col-md-6 col px-0">
                                                                 <div  class="oddsEventlist">
                                                                     <div  class="btn-group">
-                                                                        <button  class="back" fdprocessedid="e9sqyd">{{ $values[0] ?? '-' }} </button><button  class="lay" fdprocessedid="6blhb">{{ $values[1] ?? '-' }}</button>
+                                                                        <button  class="back">{{ $values[0] ?? '-' }} </button>
+                                                                        <button  class="lay">{{ $values[1] ?? '-' }}</button>
                                                                     </div>
                                                                     <div  class="btn-group">
-                                                                        <button  class="back" fdprocessedid="zq3z6">-</button><button  class="lay" fdprocessedid="a1e6gm">-</button>
+                                                                        <button  class="back">-</button>
+                                                                        <button  class="lay">-</button>
                                                                     </div>
                                                                     <div  class="btn-group">
-                                                                        <button  class="back">{{ $values[3] ?? '-' }}</button><button  class="lay" fdprocessedid="7azlm">{{ $values[4] ?? '-' }}</button>
+                                                                        <button  class="back">{{ $values[3] ?? '-' }}</button>
+                                                                        <button  class="lay">{{ $values[4] ?? '-' }}</button>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -331,11 +310,10 @@
                         </div>
                     </div>
                 </div>
-
-    </div>
-</div>
-@endsection
-@section('scripts')
+            </div>
+        </div>
+    @endsection
+    @section('scripts')
 
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
