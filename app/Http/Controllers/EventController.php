@@ -85,16 +85,45 @@ class EventController extends Controller
         else{
             $events = $this->fetchEvents();
             $event_list = $this->fetchEventByTypeId($events,$sportId);
+            $marketids  = $this->getMarketids($event_list);
+            $marketdata = $this->fetchMarketDataList($marketids);
 
             return view('event_list', [
-                'eventlist' => $event_list,
-                'menuData' => $this->commonController->list_menu(),
+                'eventlist'     => $event_list,
+                'marketdata'    => $marketdata,
+                'menuData'      => $this->commonController->list_menu(),
                 'sidebarEvents' => $this->commonController->sidebar(),
-                'menus' => $this->commonController->header_menus(),
-                'menu_name'=> $this->menuname($sportId)
+                'menus'         => $this->commonController->header_menus(),
+                'menu_name'     => $this->menuname($sportId)
             ]);
         }
         
+    }
+    /*
+    Fetch market data function for event list page
+    */
+    private function fetchMarketDataList($marketids)
+    {
+
+        $response1 = Http::asForm()->post('https://odds.laser247.online/ws/getMarketDataNew', [
+            'market_ids' => $marketids
+        ]);
+        if ($response1->successful()) {
+            $marketDatas =  trim($response1->getBody()->getContents());
+            return json_decode($marketDatas, true);
+        }
+        else{
+            return ['Error' => []];
+        }
+
+    }
+    public  static function getMarketids($event_list)
+    {
+        $market_ids = [];
+        foreach ($event_list as $event) {
+            $market_ids[] = $event['market_id']; // Add each market_id to the array
+        }
+        return $market_ids;
     }
 
  /*Get name from menudata */
@@ -143,6 +172,7 @@ class EventController extends Controller
     {
         $eventDetails = $this->fetchEventDetails($eventId);
 
+    // dd($eventDetails);
         $marketIds = $this->extractMarketIds($eventDetails['data']['event'] ?? []);
         $marketData = $this->fetchMarketData($marketIds);
         $scoreData = $this->fetchScoreData($eventId);
@@ -273,6 +303,8 @@ class EventController extends Controller
         }
     }
 
+
+
     /**
      * Fetch market data in batches.
      *
@@ -327,27 +359,40 @@ class EventController extends Controller
      */
     private function fetchScoreData($eventId)
     {
-        $url = 'https://odds.cricbet99.club/ws/getScoreData';
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(['event_id' => $eventId]));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-        $response = curl_exec($ch);
-        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        if ($status == 200) {
-                return [
-                    'status' => $status,
-                    'content' => $response,
-                ];
+        $url = 'https://odds.laser247.online/ws/getScoreData';
+        // $response1 = $this->httpClient->post('https://odds.laser247.online/ws/getScoreData');
+        $response1 = Http::asForm()->post('https://odds.laser247.online/ws/getScoreData', [
+            // Ensure this payload matches what the API expects
+            'event_id' => $eventId
+        ]);
+        // Check for a failed request
+        if ($response1->successful()) {
+            return ['content' => $response1,'status' => $response1->status()];
         }
-        return [
-            'status' => $status,
-            'content' => '',
-        ];
+        else{
+            return ['content' => '','status' => $response1->status()];
+        }
+      
+        // $ch = curl_init();
+        // curl_setopt($ch, CURLOPT_URL, $url);
+        // curl_setopt($ch, CURLOPT_POST, true);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(['event_id' => $eventId]));
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        // $response = curl_exec($ch);
+        // $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        // curl_close($ch);
+        // dd($response1->body());
+        // if ($status == 200) {
+        //         return [
+        //             'status' => $status,
+        //             'content' => $response,
+        //         ];
+        // }
+        // return [
+        //     'status' => $status,
+        //     'content' => '',
+        // ];
     }
 
     /**

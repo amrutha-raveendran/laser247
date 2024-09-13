@@ -19,27 +19,29 @@
   
     @if(isset($bookmakers['book_maker_odds']))                          
         @foreach($bookmakers['book_maker_odds'] as $bkmakr)
-            @php
-                $teamOdds = collect($parsedData)->firstWhere('team', $bkmakr['name']);
-            @endphp
+           @if($bkmakr['status'] =='1')
+                @php
+                    $teamOdds = collect($parsedData)->firstWhere('team', $bkmakr['name']);
+                @endphp
 
-            @if($teamOdds)
-                <div class="row mx-0 odds_body">          
-                    <div class="col-md-5 col-7 px-0">
-                        <p class="team-name">{{ $bkmakr['name']}}</p>
-                    </div>
-                    <div class="col-md-7 col-5 px-0">
-                        <div class="btn-group dOddsBox">
-                            <!-- Ensure that indices match expected values -->
-                            <button class="back back2">{{ $teamOdds[2] ?? '-' }} <span>{{ $teamOdds[1] ?? '-' }}</span></button>
-                            <button class="back back1">{{ $teamOdds[2] ?? '-' }} <span>{{ $teamOdds[3] ?? '-' }}</span></button>
-                            <button class="back">{{ $teamOdds['odds1'] ?? '-' }} <span>{{ $teamOdds['value1'] ?? '-' }}</span></button>
-                            <button class="lay">{{ $teamOdds['odds2'] ?? '-' }} <span>{{ $teamOdds['value2'] ?? '-' }}</span></button>
-                            <button class="lay lay1">{{ $teamOdds[39] ?? '-' }} <span>{{ $teamOdds[40] ?? '-' }}</span></button>
-                            <button class="lay lay2">{{ $teamOdds[37] ?? '-' }} <span>{{ $teamOdds[38] ?? '-' }}</span></button>
+                @if($teamOdds)
+                    <div class="row mx-0 odds_body">          
+                        <div class="col-md-5 col-7 px-0">
+                            <p class="team-name">{{ $bkmakr['name']}}</p>
+                        </div>
+                        <div class="col-md-7 col-5 px-0">
+                            <div class="btn-group dOddsBox">
+                                <!-- Ensure that indices match expected values -->
+                                <button class="back back2">{{ $teamOdds[2] ?? '-' }} <span>{{ $teamOdds[1] ?? '-' }}</span></button>
+                                <button class="back back1">{{ $teamOdds[2] ?? '-' }} <span>{{ $teamOdds[3] ?? '-' }}</span></button>
+                                <button class="back">{{ $teamOdds['odds1'] ?? '-' }} <span>{{ $teamOdds['value1'] ?? '-' }}</span></button>
+                                <button class="lay">{{ $teamOdds['odds2'] ?? '-' }} <span>{{ $teamOdds['value2'] ?? '-' }}</span></button>
+                                <button class="lay lay1">{{ $teamOdds[39] ?? '-' }} <span>{{ $teamOdds[40] ?? '-' }}</span></button>
+                                <button class="lay lay2">{{ $teamOdds[37] ?? '-' }} <span>{{ $teamOdds[38] ?? '-' }}</span></button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                @endif
             @endif
         @endforeach
         <div class="row mx-0 odds_body">
