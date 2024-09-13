@@ -19,7 +19,7 @@
   
     @if(isset($bookmakers['book_maker_odds']))                          
         @foreach($bookmakers['book_maker_odds'] as $bkmakr)
-           @if($bkmakr['status'] =='1')
+          
                 @php
                     $teamOdds = collect($parsedData)->firstWhere('team', $bkmakr['name']);
                 @endphp
@@ -42,7 +42,7 @@
                         </div>
                     </div>
                 @endif
-            @endif
+            
         @endforeach
         <div class="row mx-0 odds_body">
             <div class="fancy_message">

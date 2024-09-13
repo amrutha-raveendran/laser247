@@ -32,20 +32,9 @@
                         <!-- Event Details -->
                         @if (!empty($event_details['data']['event']))
                         <div class="dScreen">
-                            <!-- Markets Header -->
-                            @if (!empty($event_details['data']['event']['markets']))
-                                @php
-                                    $parsedData = \App\Helpers\RunnerHelper::filterAndParseOddsData(
-                                        $rows,
-                                        'OPEN',
-                                        'OPEN'
-                                    );
-                                @endphp
-                                @include('components.markets', [
-                                    'parsedData' => $parsedData,
-                                    'event_details' => $event_details,
-                                ])
-                            @elseif (!empty($event_details['data']['event']['match_odds']))
+                            
+                            <!-- Match Odds -->
+                            @if(!empty($event_details['data']['event']['match_odds']))
                                 @include('components.odds-header', [
                                     'market' => $event_details['data']['event']['match_odds'],
                                 ])
@@ -57,16 +46,15 @@
                                     'pairs' => $pairs,
                                 ])
                             @endif
-                            <!-- Match Odds -->
+                            <!-- Match Odds -->   
                         </div>
-
-
-                            <!-- MatchOdds -->
-                            <!-- Bookmakers -->
-
+                        <!-- MatchOdds -->
+                        <!-- Bookmakers -->
+                            
                             @if(!empty($event_details['data']['event']['book_makers']))
+                             
                                 @foreach ($event_details['data']['event']['book_makers'] as $bookmakers)
-
+                                   
                                     @if ($bookmakers['title'] && $bookmakers['status'] == 1)
                                         @php
 
@@ -95,7 +83,8 @@
                                         ])
                                     @endif -->
                                 @endforeach
-                            @endif
+                                @endif
+                            
 
                             <!-- Bookmakers -->
                             <!-- Tied -->
@@ -119,6 +108,22 @@
 
                             @endif
                             <!-- Fancy -->
+                             <!-- Markets Header -->
+                            @if (!empty($event_details['data']['event']['markets']))
+                                
+                                @php
+                                    $parsedData = \App\Helpers\RunnerHelper::filterAndParseOddsData(
+                                        $rows,
+                                        'OPEN',
+                                        'OPEN'
+                                    );
+                                @endphp
+                                @include('components.markets', [
+                                    'parsedData' => $parsedData,
+                                    'event_details' => $event_details,
+                                ])
+                            
+                            @endif
 
 
                     </div>

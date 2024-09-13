@@ -294,4 +294,14 @@ return $result;
         }
        return $data_score;
     }
+
+    public static function check_matchoddvalue_in_markets($matchodds,$marketid)
+    {
+      foreach ($matchodds as $item) {
+            if ($item == $marketid) {
+                return true; // ID exists
+            }
+        }
+        return false;
+    }
 }
