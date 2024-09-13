@@ -15,6 +15,14 @@
                                 <marquee scrollamount="5"></marquee>
                             </div>
                         </div>
+                        <div class="col-12 bg-dark">
+                            <h2 class="eventTitle"> 
+                                {{ $event_details['data']['event']['event']['name']}}
+                                @if($event_details['data']['event']['event']['in_play'])
+                                    <span>In Play</span>
+                                @endif
+                            </h2>
+                        </div>
                         <div class="col-md-12">
                             @if (isset($htmlContent) && !empty($htmlContent))
                                 <!-- Display the HTML content -->
@@ -56,7 +64,7 @@
                             <!-- MatchOdds -->
                             <!-- Bookmakers -->
 
-                            @if (!empty($event_details['data']['event']['book_makers']))
+                            @if(!empty($event_details['data']['event']['book_makers']))
                                 @foreach ($event_details['data']['event']['book_makers'] as $bookmakers)
 
                                     @if ($bookmakers['title'] && $bookmakers['status'] == 1)
@@ -74,7 +82,7 @@
                                         ])
                                     @endif
 
-                                    @if ($bookmakers['title'] == 'TOSS' && $bookmakers['status'] == 0)
+                                    <!-- @if ($bookmakers['title'] == 'TOSS' && $bookmakers['status'] == 1)
                                         @php
                                             $parsedData = \App\Helpers\RunnerHelper::filterAndParseOddsData(
                                                 $rows,
@@ -85,7 +93,7 @@
                                             'bookmakers' => $bookmakers,
                                             'parsedData' => $parsedData,
                                         ])
-                                    @endif
+                                    @endif -->
                                 @endforeach
                             @endif
 

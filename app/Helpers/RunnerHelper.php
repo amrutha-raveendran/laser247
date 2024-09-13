@@ -270,4 +270,28 @@ foreach ($filteredData as $subArray) {
 
 return $result;
     }
+    public static function getmarketdatabyId($marketId,$marketdata)
+    {
+        $data_score =[];
+        foreach ($marketdata as $entry) {
+            if (strpos($entry, $marketId) === 0) {
+                if (strpos($entry, 'OPEN') !== false) {
+                    $parts = explode('|', $entry);
+                    foreach ($parts as $index => $part) {
+                        if ($part === 'ACTIVE') {
+                            // Check if the 1st and 7th values exist
+                            $firstValueAfterActive = isset($parts[$index + 1]) ? $parts[$index + 1] : '-';
+                            $seventhValueAfterActive = isset($parts[$index + 7]) ? $parts[$index + 7] : '-';
+                            $data_score[] = [
+                                'firstvalue' => $firstValueAfterActive,
+                                'lastvalue'=> $seventhValueAfterActive
+                            ];
+                            
+                        }
+                    }
+                }
+            }
+        }
+       return $data_score;
+    }
 }

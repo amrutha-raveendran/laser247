@@ -89,10 +89,14 @@
                                                 </div>
                                                 <div>
                                                     @if(!empty($eventlist))
-                                                    @foreach($eventlist as $evnts)
-                                                        <div >
-                                                            <div class="row align-items-center row-my">
-                                                                <div class="col-md-6 col-10 px-1">
+                                                        @foreach($eventlist as $evnts)
+                                                            @php 
+                                                                $score_value = \App\Helpers\RunnerHelper::getmarketdatabyId($evnts['market_id'],$marketdata);
+                                                               
+                                                            @endphp
+                                                            <div>
+                                                                <div class="row align-items-center row-my">
+                                                                    <div class="col-md-6 col-10 px-1">
                                                                         <p class="matchname">
                                                                             <a class="{{($evnts['in_play']=='1')?'item-inplay':''}}" href="{{ route('event.details', $evnts['event_id']) }}">
                                                                                 @if ($evnts['in_play'])
@@ -100,59 +104,69 @@
                                                                                 @else
                                                                                     <img src="{{asset('assets/img/icon-no_play.png')}}" class="img-fluid">
                                                                                 @endif
-                                                                                {{ $evnts['name'] }}
+                                                                                    {{ $evnts['name'] }}
                                                                             </a>
                                                                             <b>
-                                                                            @if($evnts['in_play'])
-                                                                                <span class="in_play img-fluid">In-Play</span>
-                                                                            @endif
-                                                                            @if($evnts['fancy_active'])
-                                                                                <span class="game-fancy"><img src="{{ asset('assets/img/icon-fancy.svg')}}" class="img-fluid"></span>
-                                                                            @endif
-                                                                            @if($evnts['bm_active'])
-                                                                                <span class="game-bm">
-                                                                                    <img  src="{{ asset('assets/img/icon-bookmaker.svg')}}" class="img-fluid">
-                                                                                </span>
-                                                                            @endif
-                                                                            @if($evnts['custom_active']=='T')
-                                                                                <span class="game-custom">T </span>
-                                                                            @endif
-                                                                            @if($evnts['in_play'])
-                                                                                <span class="game-bm bg-success"> P </span>   
-                                                                            @endif
-                                                                            @if($evnts['open_date_format'])
-                                                                            <span class="timer-on">{{ date('h:i', strtotime($evnts['open_date_format'])) }}</span>
-                                                                            @endif
+                                                                                @if($evnts['in_play'])
+                                                                                    <span class="in_play img-fluid">In-Play</span>
+                                                                                @endif
+                                                                                @if($evnts['fancy_active'])
+                                                                                    <span class="game-fancy"><img src="{{ asset('assets/img/icon-fancy.svg')}}" class="img-fluid"></span>
+                                                                                @endif
+                                                                                @if($evnts['bm_active'])
+                                                                                    <span class="game-bm">
+                                                                                        <img  src="{{ asset('assets/img/icon-bookmaker.svg')}}" class="img-fluid">
+                                                                                    </span>
+                                                                                @endif
+                                                                                @if($evnts['custom_active']=='T')
+                                                                                    <span class="game-custom">T </span>
+                                                                                @endif
+                                                                                @if($evnts['in_play'])
+                                                                                    <span class="game-bm bg-success"> P </span>   
+                                                                                @endif
+                                                                                @if($evnts['open_date_format'])
+                                                                                <span class="timer-on">{{ date('h:i', strtotime($evnts['open_date_format'])) }}</span>
+                                                                                @endif
                                                                             </b>
                                                                         </p>
-                                                                </div>
-                                                                <div class="col-md-1 text-lg-center tex-right col-matched"></div>
-                                                                <div class="col-md-4 col px-0">
+                                                                    </div>
+                                                                    <div class="col-md-1 text-lg-center tex-right col-matched"></div>
+                                                                    <div class="col-md-4 col px-0">
                                                                         <div class="oddsEventlist">
-                                                                            <div class="btn-group">
-                                                                                <button class="back">-</button><button class="lay">-</button>
-                                                                            </div>
-                                                                            <div class="btn-group">
-                                                                                <button class="back">-</button><button class="lay">-</button>
-                                                                            </div>
-                                                                            <div class="btn-group">
-                                                                                <button class="back">-</button><button class="lay">-</button>
+                                                                            @php
+                                                                                if(!empty($score_value))
+                                                                                {
+                                                                                    $back1 =$score_value[0]['firstvalue'];
+                                                                                    $lay1 =$score_value[0]['lastvalue'];
+                                                                                    $back2 =$score_value[1]['firstvalue'];
+                                                                                    $lay2 =$score_value[1]['lastvalue'];
+                                                                                }
+                                                                                else
+                                                                                    $back1 = $lay1 = $back2 = $lay2 ='-';
+                                                                            @endphp
+                                                                                <div class="btn-group">
+                                                                                    <button class="back">{{$back1}}</button><button class="lay">{{$lay1}}</button>
+                                                                                </div>
+                                                                                <div class="btn-group">
+                                                                                    <button class="back">-</button><button class="lay">-</button>
+                                                                                </div>
+                                                                                <div class="btn-group">
+                                                                                    <button class="back">{{$back2}}</button><button class="lay">{{$lay2}}</button>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
-                                                                    </div>
-                                                                    <div class="col-md-1 col-2 text-end text-lg-center">
-                                                                        <!---->
-                                                                        <a href="javascript:void(0);" class="add-pins"><img src="{{ asset('assets/img/pin-white.svg')}}" class="img-fluid" /></a>
-                                                                        <!---->
+                                                                        <div class="col-md-1 col-2 text-end text-lg-center">
+                                                                            <!---->
+                                                                            <a href="javascript:void(0);" class="add-pins"><img src="{{ asset('assets/img/pin-white.svg')}}" class="img-fluid" /></a>
+                                                                            <!---->
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        <div >
+                                                            <div >
                                                         @endforeach
-                                                        @else
+                                                    @else
                                                         <div class="no-data">No Data Found</div>
                                                     @endif
-                                                    
                                                 </div>
                                             </div>
                                         </div>
