@@ -336,7 +336,7 @@ class EventController extends Controller
      * @return array
      */
 
-     private function fetchMarketData(array $marketIds)
+     private function fetchMarketData1(array $marketIds)
      {
         try{
 
@@ -361,7 +361,7 @@ class EventController extends Controller
             ];
         }
      }
-     private function fetchMarketData1(array $marketIds)
+     private function fetchMarketData(array $marketIds)
     {
         $batchSize = 50;
         $batches = array_chunk($marketIds, $batchSize);
