@@ -56,8 +56,10 @@
                                                     @if ($data['title'] === $fancy_tabs['name'])
                                                         <button class="back back2"></button>
                                                         <button class="back back1"></button>
-                                                        <button class="lay">{{ $data['index_17'] }} <span>{{ $data['index_18'] }}</span></button>
-                                                        <button class="back">{{ $data['index_19'] }} <span>{{ $data['index_20'] }}</span></button>
+                                                        <!-- <button class="lay">{{ $data['index_17'] }} <span>{{ $data['index_18'] }}</span></button>
+                                                        <button class="back">{{ $data['index_19'] }} <span>{{ $data['index_20'] }}</span></button> -->
+                                                        <button class="lay">{{ $data['index_20'] }} <span>{{ $data['index_19'] }}</span></button>
+                                                        <button class="back">{{ $data['index_18'] }} <span>{{ $data['index_17'] }}</span></button>
                                                         <button class="min-max-bet">
                                                             <dl class="fancy-info">
                                                                 <dd>{{ number_format($fancy_tabs['min_bet'], 0) }}- {{ \App\Helpers\CustomHelper::format_number($fancy_tabs['max_bet']) }}</dd>
@@ -108,8 +110,8 @@
                                                     @if (!empty($parsedData))
                                                         @foreach($parsedData as $data)
                                                             @if ($data['title'] === $fancy_tabs['name'])
-                                                                <button class="back back2">{{ $data['index_18'] }}</button>
-                                                                <button class="back back1">{{ $data['index_17'] }}</button>
+                                                                <button class="back back2"></button>
+                                                                <button class="back back1"></button>
                                                                 <button class="lay">{{ $data['index_19'] }} <span>{{ $data['index_20'] }}</span></button>
                                                                 <button class="back">{{ $data['index_19'] }} <span>{{ $data['index_20'] }}</span></button>
                                                                 <button class="min-max-bet">
@@ -117,7 +119,7 @@
                                                                         <dd>{{ number_format($fancy_tabs['min_bet'], 0) }}- {{ \App\Helpers\CustomHelper::format_number($fancy_tabs['max_bet']) }}</dd>
                                                                     </dl>
                                                                 </button>
-                                                                <div class="suspended">suspended</div>
+                                                                <!-- <div class="suspended">suspended</div> -->
                                                             @endif
                                                         @endforeach
                                                     @endif

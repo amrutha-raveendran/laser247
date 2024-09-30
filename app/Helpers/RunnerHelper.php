@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Helpers;
+use Mockery\Matcher\ArgumentListMatcher;
 
 class RunnerHelper
 {
@@ -304,4 +305,79 @@ return $result;
         }
         return false;
     }
+
+    // Event Detail Match Odd Value
+    public static function check_matchoddvalue_in_detail($marketid,$marketdata,$selection_id)
+    {
+        // dd($selection_id);
+        // dd($marketdata);
+       if (isset($marketdata[$marketid])) {
+            $market_details = $marketdata[$marketid];
+            if(!empty($market_details)){
+            // Split the data using '|' as the delimiter
+            $market_data = explode('|', $market_details);
+            foreach ($marketdata as $market_id => $market_details) {
+                if (strpos($market_details, 'OPEN')){
+                    if (strpos($market_details, $selection_id) !== false) {
+                        preg_match_all('/'.$selection_id.'(?:\|([^|]+)){12}/', $market_details, $match);
+                           // Split the data using '|' as the delimiter
+                        $exploded_data = explode('|', $market_details);
+                        $index = array_search($selection_id, $exploded_data);
+                        if ($index !== false && isset($exploded_data[$index + 1])) {
+                            // Check the status is ACTIVE
+                            if ($exploded_data[$index + 1] === 'ACTIVE') {
+                                $active_index = $index + 1;
+                                $next_12_values = array_slice($exploded_data, $active_index + 1, 12);
+                                return $next_12_values;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+       }
+      return false;
+    }
+
+    public static function check_bookmaker_in_detail($event_id,$marketid,$market_data,$selection_id,$bookmaker_id) {
+
+        if(isset($market_data[$marketid])) {
+            $marketlist = $market_data[$marketid];
+            
+            if (strpos($marketlist, $event_id)){
+                if (strpos($marketlist, 'BOOK_MAKER')){
+                    $market_datas = explode('|', $marketlist);
+                    if(strpos($marketlist,$selection_id)){
+                        // Find the index of the selection_id
+                    $index = array_search($selection_id, $market_datas);
+                    }
+                    // print_r($market_datas);
+                
+                    $next_values = array_slice($market_datas, $index + 2, '9');
+                    return $next_values;
+                }
+            }
+        }
+
+    }
+    public static function check_fancy_in_detail($event_id,$marketid,$market_data,$selection_id,$id) {
+        if(isset($market_data[$marketid])) {
+            $marketlist = $market_data[$marketid];
+            if (strpos($marketlist, $event_id)){
+                if (strpos($marketlist, 'FANCY')){
+                    if(strpos($marketlist,$id))
+                    {
+                        // 
+                        $market_datas = explode('|', $marketlist);
+                        $index = array_search($id, $market_datas);
+                        $next_values = array_slice($market_datas, $index + 7, '13');
+                        return $next_values;
+                    }
+                    
+                }
+            }
+        }
+        return false;
+    }
+   
 }

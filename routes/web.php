@@ -15,6 +15,7 @@ Route::get('/dashboard', [EventController::class, 'showDashboard'])->name('dashb
 
 Route::get('/event/{eventId}', [EventController::class, 'getEventDetails'])->name('event.details');
 
+Route::get('/eventtest/{eventId}', [EventController::class, 'getEventDetailsTest'])->name('event.details_test');
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 

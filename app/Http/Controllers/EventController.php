@@ -175,9 +175,33 @@ class EventController extends Controller
     // dd($eventDetails);
         $marketIds = $this->extractMarketIds($eventDetails['data']['event'] ?? []);
         $marketData = $this->fetchMarketData($marketIds);
+        // dd($marketData);
         $scoreData = $this->fetchScoreData($eventId);
 
-        return view('event_details', [
+        return view('event_details_test', [
+            'htmlContent' => $scoreData['content'],
+            'eventDetails' => $eventDetails['data']['event'] ?? [],
+            'event_details' => $eventDetails,
+            'rows' => $marketData['rows'],
+            'message' => $this->handleNoContentResponse($scoreData['status']),
+            'menuData' => $this->commonController->list_menu(),
+            'sidebarEvents' => $this->commonController->sidebar(),
+            'menus' => $this->commonController->header_menus()
+        ]);
+    }
+
+    
+    public function getEventDetailsTest($eventId)
+    {
+        $eventDetails = $this->fetchEventDetails($eventId);
+        // dd($eventDetails);
+        $marketIds = $this->extractMarketIds($eventDetails['data']['event'] ?? []);
+        $marketData = $this->fetchMarketData($marketIds);
+        // dd($marketIds);
+        // dd($marketData);
+        $scoreData = $this->fetchScoreData($eventId);
+
+        return view('event_details_test', [
             'htmlContent' => $scoreData['content'],
             'eventDetails' => $eventDetails['data']['event'] ?? [],
             'event_details' => $eventDetails,
@@ -311,7 +335,33 @@ class EventController extends Controller
      * @param  array  $marketIds
      * @return array
      */
-    private function fetchMarketData(array $marketIds)
+
+     private function fetchMarketData(array $marketIds)
+     {
+        try{
+
+       
+         $responses = Http::pool(fn(Pool $pool) => array_map(fn($marketId) => $pool->post('https://odds.laser247.online/ws/getMarketDataNew', [
+             'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
+             'form_params' => ['market_ids[]' => $marketId],
+         ]), $marketIds));
+        //  dd($responses);
+  
+         return [
+             'rows' => array_map(fn($response) => trim($response->body()), $responses)
+         ];
+        }catch (\Exception $e) {
+          
+            Log::error('API request failed: ', [
+                'error_message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return [
+                'error' => 'An error occurred while processing the API request.'
+            ];
+        }
+     }
+     private function fetchMarketData1(array $marketIds)
     {
         $batchSize = 50;
         $batches = array_chunk($marketIds, $batchSize);
