@@ -6,6 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ asset('assets/bzip2.js') }}"></script>
 </head>
 
 <body class="bg-dark">
@@ -397,7 +398,7 @@
 
     </div>
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.4/pako.min.js"></script>
+
 
     <script>
         // Pusher.logToConsole = true;
@@ -416,7 +417,7 @@
             // Check if matchOdds exists and has runners
             if (!matchOdds || matchOdds.status !== 1 || !matchOdds.runners || matchOdds.runners.length === 0) {
                 // Show a message when match odds are not available
-                tbodyElement.html('<tr><td colspan="7">No match odds available.</td></tr>');
+
                 return;
             }
 
@@ -439,7 +440,7 @@
 
             // If no matching items are found, show a fallback message
             if (!matchedItem) {
-                tbodyElement.html('<tr><td colspan="7">No matched items found for the selected market.</td></tr>');
+                // tbodyElement.html('<tr><td colspan="7">No matched items found for the selected market.</td></tr>');
                 return;
             }
 
@@ -846,21 +847,20 @@
                 });
 
                 let byteArray = new Uint8Array(charData);
-
-                // Step 3: Decompress the data using pako.inflate
-                let decompressedData = pako.inflate(byteArray, {
-                    to: 'string'
-                });
+                let decompressedData = bzip2.simple(bzip2.array(byteArray));
+                // let decompressedData = pako.inflate(byteArray, {
+                //     to: 'string'
+                // });
                 // console.log(decompressedData);
-                // Step 4: Unserialize the decompressed data (deserialize it back to an object)
-                let eventData = JSON.parse(decompressedData); // Use JSON if you serialized with JSON.encode
+                const decompressedText = new TextDecoder().decode(decompressedData);
+                let eventData = JSON.parse(decompressedText);
                 // console.log(eventData);
                 var event = eventData.event;
                 var items = eventData.items;
                 var eventDetails = eventData.eventDetails;
-                var marketIds = eventData.marketIds;
+                // var marketIds = eventData.marketIds;
                 var currentEventId = event['id'];
-                // console.log('Event:', event);
+                console.log('Event:', event);
                 // console.log('Items:', items);
                 // console.log('Event Details:', eventDetails);
                 // console.log('Market IDs:', marketIds); // Log the data to console
@@ -875,24 +875,6 @@
                     console.log('Event ID does not match. No rendering performed.');
                 }
             });
-
-
-
-            // });
-
-            // console.log(eventData);
-
-
-
-
-            // Fetch data initially
-            // fetchScore();
-
-
-            // Set interval to refresh every 3 seconds
-            // setInterval(fetchScore, 500);
-            // setInterval(fetchData, 500);
-
 
         });
     </script>

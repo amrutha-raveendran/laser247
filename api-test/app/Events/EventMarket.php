@@ -21,14 +21,15 @@ class EventMarket implements ShouldBroadcastNow
     public $event;
     public $items;
     public $eventDetails;
-    public $marketIds;
+    // public $marketIds;
 
-    public function __construct($event, $items, $eventDetails, $marketIds)
+    public function __construct($event, $items, $eventDetails) // , $marketIds
+
     {
         $this->event = $event;
         $this->items = $items;
         $this->eventDetails = $eventDetails;
-        $this->marketIds = $marketIds;
+        // $this->marketIds = $marketIds;
     }
 
 
@@ -51,11 +52,12 @@ class EventMarket implements ShouldBroadcastNow
             'event' => $this->event,
             'items' => $this->items,
             'eventDetails' => $this->eventDetails,
-            'marketIds' => $this->marketIds,
+            // 'marketIds' => $this->marketIds,
 
         ];
         $jsonData = json_encode($data);
-        $compressedData = base64_encode(gzcompress($jsonData));
+        // $compressedData = base64_encode(gzcompress($jsonData));
+        $compressedData = base64_encode(bzcompress($jsonData));
         // return [
         //     'event' => $this->event,
         //     'items' => $this->items,
