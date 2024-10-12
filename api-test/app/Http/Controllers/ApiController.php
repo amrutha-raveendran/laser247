@@ -66,7 +66,7 @@ class ApiController extends Controller
         if (!$marketDataResponse) {
             return response()->json(['error' => 'Failed to fetch market data.'], 500);
         }
-
+        // dd($marketDataResponse);
         // Artisan::call('broadcast:market-data', ['eventId' => $id]);
         BroadcastMarketData::dispatch($id, $this->eventService);
 

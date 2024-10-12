@@ -336,13 +336,28 @@
         </div>
 
         <div id="fancy-section">
-            <!-- Fancy Card -->
+            <!-- Check if fancy items exist -->
             @if(isset($eventDetails['fancy']) && is_array($eventDetails['fancy']) && count($eventDetails['fancy']) > 0)
 
+            <?php
+            // Group the fancy items by their fancy_type
+            $groupedFancyItems = [];
+            foreach ($eventDetails['fancy'] as $fancyItem) {
+                $fancyType = $fancyItem['fancy_type'] ?? 'unknown'; // Default to 'unknown' if not set
+                $groupedFancyItems[$fancyType][] = $fancyItem; // Group by fancy_type
+            }
+            ?>
+
+            @foreach ($groupedFancyItems as $fancyType => $fancyItems)
             <div class="card mt-4 mb-4">
-                @if (isset($eventDetails['fancy'][0]['market_type_id']))
-                <div class="card-header bg-dark text-light">{{ $eventDetails['fancy'][0]['market_type_id'] }}</div>
-                @endif
+                <!-- Card header for the fancy type -->
+                <div class="card-header bg-dark text-light">
+                    @if($fancyType === 'RUN')
+                    {{ $fancyItems[0]['market_type_id'] ?? 'Market Type ID' }}
+                    @else
+                    {{ $fancyType }}
+                    @endif
+                </div>
 
                 <div class="card-body">
                     <table class="table table-striped table-hover">
@@ -355,10 +370,9 @@
                             </tr>
                         </thead>
                         <tbody class="text-center">
-                            @foreach ($eventDetails['fancy'] as $fancyItem)
+                            @foreach ($fancyItems as $fancyItem)
                             <?php
                             $marketId = $fancyItem['market_id'];
-
                             $matchedItem1 = null;
 
                             // Search for the matching market_id in items[]
@@ -368,7 +382,6 @@
                                     break;
                                 }
                             }
-                            // dd($matchedItem1);
                             ?>
 
                             @if ($matchedItem1 !== null)
@@ -393,6 +406,7 @@
                     </table>
                 </div>
             </div>
+            @endforeach
             @endif
         </div>
 
@@ -740,66 +754,81 @@
 
             // Check if eventDetails has fancy and is an array
             if (eventDetails.fancy && Array.isArray(eventDetails.fancy) && eventDetails.fancy.length > 0) {
-                html += `<div class="card mt-4 mb-4">`;
-
-                // Add market_type_id header if it exists
-                if (eventDetails.fancy[0].market_type_id) {
-                    html += `<div class="card-header bg-dark text-light">${eventDetails.fancy[0].market_type_id}</div>`;
-                }
-
-                html += `<div class="card-body">
-    <table class="table table-striped table-hover">
-        <thead class="text-center">
-            <tr>
-                <th></th>
-                <th>NO</th>
-                <th>YES</th>
-                <th>Min-Max</th>
-            </tr>
-        </thead>
-        <tbody class="text-center">`;
-
-                // Loop through each fancy item
-                eventDetails.fancy.forEach(function(fancyItem) {
-                    const marketId = fancyItem.market_id;
-
-                    // Check if fancyItem status is 1
-                    if (fancyItem.status === 1) { // Add the condition here
-                        let matchedItem1 = null;
-
-                        // Search for the matching market_id in items
-                        for (let itemKey in items) {
-                            const itemArray = items[itemKey];
-
-                            if (Array.isArray(itemArray) && itemArray.includes(marketId)) {
-                                matchedItem1 = itemArray;
-                                break; // Stop searching once we find a match
-                            }
-                        }
-                        // console.log('Matched Item:', matchedItem1);
-                        // Render the row if we found a matching item
-                        if (matchedItem1) {
-                            html += `
-    <tr>
-        <td>${matchedItem1[7] ?? ''}</td>
-        <td class="bg-info">
-            <strong>${matchedItem1[20] ?? ''}</strong>
-            <span style="font-size: 0.7em; display: block; margin-top: 5px;">${matchedItem1[19] ?? ''}</span>
-        </td>
-        <td class="bg-warning">
-            <strong>${matchedItem1[18] ?? ''}</strong>
-            <span style="font-size: 0.7em; display: block; margin-top: 5px;">${matchedItem1[17] ?? ''}</span>
-        </td>
-        <td>
-            ${number_format(matchedItem1[8], 0)} - 
-            ${matchedItem1[9] >= 1000 ? number_format(matchedItem1[9] / 1000, 0) + 'k' : number_format(matchedItem1[9], 0)}
-        </td>
-    </tr>`;
-                        }
+                // Group fancy items by fancy_type
+                const groupedFancyItems = {};
+                eventDetails.fancy.forEach(item => {
+                    const fancyType = item.fancy_type || 'unknown'; // Group by fancy_type
+                    if (!groupedFancyItems[fancyType]) {
+                        groupedFancyItems[fancyType] = [];
                     }
+                    groupedFancyItems[fancyType].push(item);
                 });
 
-                html += `</tbody></table></div></div>`;
+                // Iterate over each group
+                for (const [fancyType, fancyItems] of Object.entries(groupedFancyItems)) {
+                    html += `<div class="card mt-4 mb-4">`;
+
+                    // Card header for fancy type
+                    if (fancyType === 'RUN') {
+                        html += `<div class="card-header bg-dark text-light">${fancyItems[0].market_type_id || 'Market Type ID'}</div>`;
+                    } else {
+                        html += `<div class="card-header bg-dark text-light">${fancyType}</div>`;
+                    }
+
+                    html += `<div class="card-body">
+            <table class="table table-striped table-hover">
+                <thead class="text-center">
+                    <tr>
+                        <th></th>
+                        <th>NO</th>
+                        <th>YES</th>
+                        <th>Min-Max</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">`;
+
+                    // Loop through each fancy item in the current group
+                    fancyItems.forEach(fancyItem => {
+                        const marketId = fancyItem.market_id;
+
+                        // Check if fancyItem status is 1
+                        if (fancyItem.status === 1) {
+                            let matchedItem1 = null;
+
+                            // Search for the matching market_id in items
+                            for (let itemKey in items) {
+                                const itemArray = items[itemKey];
+
+                                if (Array.isArray(itemArray) && itemArray.includes(marketId)) {
+                                    matchedItem1 = itemArray;
+                                    break; // Stop searching once we find a match
+                                }
+                            }
+
+                            // Render the row if we found a matching item
+                            if (matchedItem1) {
+                                html += `
+                        <tr>
+                            <td>${matchedItem1[7] ?? ''}</td>
+                            <td class="bg-info">
+                                <strong>${matchedItem1[20] ?? ''}</strong>
+                                <span style="font-size: 0.7em; display: block; margin-top: 5px;">${matchedItem1[19] ?? ''}</span>
+                            </td>
+                            <td class="bg-warning">
+                                <strong>${matchedItem1[18] ?? ''}</strong>
+                                <span style="font-size: 0.7em; display: block; margin-top: 5px;">${matchedItem1[17] ?? ''}</span>
+                            </td>
+                            <td>
+                                ${number_format(matchedItem1[8], 0)} - 
+                                ${matchedItem1[9] >= 1000 ? number_format(matchedItem1[9] / 1000, 0) + 'k' : number_format(matchedItem1[9], 0)}
+                            </td>
+                        </tr>`;
+                            }
+                        }
+                    });
+
+                    html += `</tbody></table></div></div>`;
+                }
             } else {
                 html += '<div>No fancy items available.</div>'; // Handle case when no fancy items exist
             }
@@ -808,24 +837,25 @@
             fancySection.html(html); // Update the fancy section with the generated HTML
         }
 
-        // Helper function for formatting numbers (if needed)
+        // Helper function for formatting numbers
         function number_format(number, decimals) {
             return parseFloat(number).toFixed(decimals);
         }
 
-        // setInterval(function() {
-        //     $.ajax({
-        //         url: '/event/' + eventId + '/details',
-        //         method: 'GET',
-        //         async: true,
-        //         cache: false,
-        //         // success: function(response) {
-        //         //     console.log(response);
-        //         //     // Handle the response data, e.g., update the UI
 
-        //         // }
-        //     });
-        // }, 3000);
+        setInterval(function() {
+            $.ajax({
+                url: '/event/' + eventId + '/details',
+                method: 'GET',
+                async: true,
+                cache: false,
+                // success: function(response) {
+                //     console.log(response);
+                //     // Handle the response data, e.g., update the UI
+
+                // }
+            });
+        }, 3000);
 
 
         // console.log(eventId);
