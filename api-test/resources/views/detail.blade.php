@@ -813,24 +813,24 @@
             return parseFloat(number).toFixed(decimals);
         }
 
-        setInterval(function() {
-            $.ajax({
-                url: '/event/' + eventId + '/details',
-                method: 'GET',
-                async: true,
-                cache: false,
-                // success: function(response) {
-                //     console.log(response);
-                //     // Handle the response data, e.g., update the UI
+        // setInterval(function() {
+        //     $.ajax({
+        //         url: '/event/' + eventId + '/details',
+        //         method: 'GET',
+        //         async: true,
+        //         cache: false,
+        //         // success: function(response) {
+        //         //     console.log(response);
+        //         //     // Handle the response data, e.g., update the UI
 
-                // }
-            });
-        }, 3000);
+        //         // }
+        //     });
+        // }, 3000);
 
 
         // console.log(eventId);
         $(document).ready(function() {
-
+            // $(window).on('load', function() {
 
             var pusher = new Pusher('d1e5b61f987c9dd29add', {
                 cluster: 'ap2'

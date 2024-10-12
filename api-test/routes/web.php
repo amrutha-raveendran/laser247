@@ -13,3 +13,4 @@ Route::get('/event1', [ApiController::class, 'event1'])->name('event1');
 Route::get('/event/{id}', [ApiController::class, 'eventDetail'])->name('eventDetail');
 Route::get('/event/{id}/details', [ApiController::class, 'fetchEventDetails']);
 Route::get('/event/{id}/score', [ApiController::class, 'fetchScoreData']);
+// Route::post('/pusher/webhook', [ApiController::class, 'handleWebhook']);

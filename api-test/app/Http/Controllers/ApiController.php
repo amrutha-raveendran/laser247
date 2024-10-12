@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Events\EventMarket;
+use App\Jobs\BroadcastMarketData;
 use App\Services\EventService;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -43,7 +46,7 @@ class ApiController extends Controller
         }
 
         $eventDetails = $eventData['data']['event'] ?? null;
-
+        // dd($eventDetails);
         if (!$eventDetails) {
             return response()->json(['error' => 'No event details found.'], 404);
         }
@@ -64,19 +67,9 @@ class ApiController extends Controller
             return response()->json(['error' => 'Failed to fetch market data.'], 500);
         }
 
-        // Optionally, handle score data fetch similarly
-        // $data = [
-        //     'event' => $eventDetails['event'],
-        //     'items' => $marketDataResponse['items'],
-        //     'eventDetails' => $eventDetails,
+        // Artisan::call('broadcast:market-data', ['eventId' => $id]);
+        BroadcastMarketData::dispatch($id, $this->eventService);
 
-        // ];
-        // $jsonData = json_encode($data);
-        // $compressedData = base64_encode(bzcompress($jsonData));
-        // // dd($compressedData);
-        // // $jsonData = json_encode($data);
-        // $dataSize = strlen($compressedData);
-        // dd($dataSize);
         return view('detail', [
             'event' => $eventDetails['event'],
             'items' => $marketDataResponse['items'],
